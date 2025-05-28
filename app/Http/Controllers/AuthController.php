@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -12,25 +14,55 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // Menangani submit form login
+    // Proses login
     public function login(Request $request)
     {
-        // Validasi input
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        // Coba login
-        $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
-            // Jika berhasil, redirect ke dashboard
-            return redirect()->intended('/dashboard');
+        if (Auth::attempt($request->only('email', 'password'))) {
+            return redirect()->intended('/dashboard')->with('success', 'Login berhasil!');
         }
 
-        // Jika gagal, kembali ke halaman login dengan pesan error
         return back()->withErrors([
             'email' => 'Email atau password salah.',
+        ])->withInput();
+    }
+
+    // Menampilkan halaman registrasi
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
+    // Proses registrasi
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
         ]);
+
+        // Simpan user baru
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Login otomatis setelah registrasi
+        Auth::login($user);
+
+        return redirect('/dashboard')->with('success', 'Registrasi berhasil! Selamat datang.');
+    }
+
+    // Logout
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/login')->with('success', 'Anda telah logout.');
     }
 }
