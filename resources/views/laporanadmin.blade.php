@@ -89,101 +89,54 @@
       >
         <option>Jenis: Mingguan</option>
       </select>
-      <button
-        class="bg-green-600 text-white text-sm font-semibold italic rounded-md px-4 py-2 hover:bg-green-700 transition-colors whitespace-nowrap"
-        type="button"
-      >
-        Buat Laporan Baru
-      </button>
+     <a href="{{ route('laporan.baru') }}"
+   class="bg-green-600 text-white text-sm font-semibold italic rounded-md px-4 py-2 hover:bg-green-700 transition-colors whitespace-nowrap inline-block text-center">
+   Buat Laporan Baru
+</a>
+
+
     </section>
 
     <!-- Reports Table -->
     <section class="overflow-x-auto rounded-lg bg-white border border-gray-200 max-w-7xl">
-      <table class="w-full text-left border-collapse min-w-[700px]">
-        <thead>
-          <tr class="bg-gray-50 border-b border-gray-200">
-            <th class="py-3 px-6 font-semibold italic text-xs text-gray-700 border-r border-gray-200">ID</th>
-            <th class="py-3 px-6 font-semibold italic text-xs text-gray-700 border-r border-gray-200">Tanggal Laporan</th>
-            <th class="py-3 px-6 font-semibold italic text-xs text-gray-700 border-r border-gray-200">Jenis Laporan</th>
-            <th class="py-3 px-6 font-semibold italic text-xs text-gray-700 border-r border-gray-200">Total (Rp)</th>
-            <th class="py-3 px-6 font-semibold italic text-xs text-gray-700">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td class="py-4 px-6 text-sm text-gray-700">0001</td>
-            <td class="py-4 px-6 text-sm text-gray-700">08/05/2025</td>
-            <td class="py-4 px-6 text-sm text-gray-700">Mingguan</td>
-            <td class="py-4 px-6 text-sm text-gray-700">5,450,000.00</td>
-            <td class="py-4 px-6 flex items-center space-x-2">
-              <button class="bg-blue-600 text-white text-xs font-semibold italic rounded px-3 py-1 hover:bg-blue-700 transition-colors" type="button">
-                Lihat
-              </button>
-              <button class="bg-red-100 text-red-600 text-xs font-semibold rounded px-2 py-1" type="button" aria-label="Hapus laporan 0001">
+  <table class="w-full text-left border-collapse min-w-[700px]">
+    <thead>
+      <tr class="bg-gray-50 border-b border-gray-200">
+        <th class="py-3 px-6 font-semibold italic text-xs text-gray-700 border-r border-gray-200">ID</th>
+        <th class="py-3 px-6 font-semibold italic text-xs text-gray-700 border-r border-gray-200">Tanggal Laporan</th>
+        <th class="py-3 px-6 font-semibold italic text-xs text-gray-700 border-r border-gray-200">Jenis Laporan</th>
+        <th class="py-3 px-6 font-semibold italic text-xs text-gray-700 border-r border-gray-200">Total (Rp)</th>
+        <th class="py-3 px-6 font-semibold italic text-xs text-gray-700">Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      @forelse ($laporans as $index => $laporan)
+        <tr class="{{ $index % 2 == 0 ? 'border-b border-gray-100 hover:bg-gray-50 transition-colors' : 'bg-gray-50 border-b border-gray-100 hover:bg-gray-100 transition-colors' }}">
+          <td class="py-4 px-6 text-sm text-gray-700">{{ $laporan->id }}</td>
+          <td class="py-4 px-6 text-sm text-gray-700">{{ $laporan->tanggal_laporan->format('d/m/Y') }}</td>
+          <td class="py-4 px-6 text-sm text-gray-700">{{ $laporan->jenis_laporan }}</td>
+          <td class="py-4 px-6 text-sm text-gray-700">{{ number_format($laporan->total, 2, ',', '.') }}</td>
+          <td class="py-4 px-6 flex items-center space-x-2">
+            <a href="{{ route('laporan.show', $laporan->id) }}" class="bg-blue-600 text-white text-xs font-semibold italic rounded px-3 py-1 hover:bg-blue-700 transition-colors">
+              Lihat
+            </a>
+            <form action="{{ route('laporan.destroy', $laporan->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this report?');">
+              @csrf
+              @method('DELETE')
+              <button class="bg-red-100 text-red-600 text-xs font-semibold rounded px-2 py-1" type="submit" aria-label="Hapus laporan {{ $laporan->id }}">
                 ×
               </button>
-            </td>
-          </tr>
-          <tr class="bg-gray-50 border-b border-gray-100 hover:bg-gray-100 transition-colors">
-            <td class="py-4 px-6 text-sm text-gray-700">0002</td>
-            <td class="py-4 px-6 text-sm text-gray-700">01/05/2025</td>
-            <td class="py-4 px-6 text-sm text-gray-700">Mingguan</td>
-            <td class="py-4 px-6 text-sm text-gray-700">4,250,000.00</td>
-            <td class="py-4 px-6 flex items-center space-x-2">
-              <button class="bg-blue-600 text-white text-xs font-semibold italic rounded px-3 py-1 hover:bg-blue-700 transition-colors" type="button">
-                Lihat
-              </button>
-              <button class="bg-red-100 text-red-600 text-xs font-semibold rounded px-2 py-1" type="button" aria-label="Hapus laporan 0002">
-                ×
-              </button>
-            </td>
-          </tr>
-          <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td class="py-4 px-6 text-sm text-gray-700">0003</td>
-            <td class="py-4 px-6 text-sm text-gray-700">30/04/2025</td>
-            <td class="py-4 px-6 text-sm text-gray-700">Bulanan</td>
-            <td class="py-4 px-6 text-sm text-gray-700">15,750,000.00</td>
-            <td class="py-4 px-6 flex items-center space-x-2">
-              <button class="bg-blue-600 text-white text-xs font-semibold italic rounded px-3 py-1 hover:bg-blue-700 transition-colors" type="button">
-                Lihat
-              </button>
-              <button class="bg-red-100 text-red-600 text-xs font-semibold rounded px-2 py-1" type="button" aria-label="Hapus laporan 0003">
-                ×
-              </button>
-            </td>
-          </tr>
-          <tr class="bg-gray-50 border-b border-gray-100 hover:bg-gray-100 transition-colors">
-            <td class="py-4 px-6 text-sm text-gray-700">0004</td>
-            <td class="py-4 px-6 text-sm text-gray-700">24/04/2025</td>
-            <td class="py-4 px-6 text-sm text-gray-700">Mingguan</td>
-            <td class="py-4 px-6 text-sm text-gray-700">3,850,000.00</td>
-            <td class="py-4 px-6 flex items-center space-x-2">
-              <button class="bg-blue-600 text-white text-xs font-semibold italic rounded px-3 py-1 hover:bg-blue-700 transition-colors" type="button">
-                Lihat
-              </button>
-              <button class="bg-red-100 text-red-600 text-xs font-semibold rounded px-2 py-1" type="button" aria-label="Hapus laporan 0004">
-                ×
-              </button>
-            </td>
-          </tr>
-          <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td class="py-4 px-6 text-sm text-gray-700">0005</td>
-            <td class="py-4 px-6 text-sm text-gray-700">31/03/2025</td>
-            <td class="py-4 px-6 text-sm text-gray-700">Bulanan</td>
-            <td class="py-4 px-6 text-sm text-gray-700">16,200,000.00</td>
-            <td class="py-4 px-6 flex items-center space-x-2">
-              <button class="bg-blue-600 text-white text-xs font-semibold italic rounded px-3 py-1 hover:bg-blue-700 transition-colors" type="button">
-                Lihat
-              </button>
-              <button class="bg-red-100 text-red-600 text-xs font-semibold rounded px-2 py-1" type="button" aria-label="Hapus laporan 0005">
-                ×
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
+            </form>
+          </td>
+        </tr>
+      @empty
+        <tr>
+          <td colspan="5" class="py-4 px-6 text-sm text-gray-700 text-center">No reports available.</td>
+        </tr>
+      @endforelse
+    </tbody>
+  </table>
+</section>
     <!-- Pagination -->
     <nav
       class="flex justify-center items-center space-x-2 mt-6 select-none text-sm text-gray-700"
@@ -224,34 +177,7 @@
       </button>
     </nav>
 
-    <!-- Summary Cards -->
-    <section class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl">
-      <div class="bg-white border border-gray-200 rounded-lg p-6 flex flex-col space-y-2">
-        <p class="font-semibold italic text-sm text-gray-700">
-          Total Pendapatan <span class="not-italic">(Bulan Ini)</span>
-        </p>
-        <p class="text-green-600 font-extrabold italic text-2xl">
-          Rp 45,500,000.00
-        </p>
-        <p class="text-xs text-gray-500">+12.5% dari bulan lalu</p>
-      </div>
-      <div class="bg-white border border-gray-200 rounded-lg p-6 flex flex-col space-y-2">
-        <p class="font-semibold italic text-sm text-gray-700">
-          Jumlah Transaksi <span class="not-italic">(Bulan Ini)</span>
-        </p>
-        <p class="text-blue-700 font-extrabold italic text-2xl">32</p>
-        <p class="text-xs text-gray-500">+8.2% dari bulan lalu</p>
-      </div>
-      <div class="bg-white border border-gray-200 rounded-lg p-6 flex flex-col space-y-2">
-        <p class="font-semibold italic text-sm text-gray-700">
-          Rata-rata Pendapatan per Hari
-        </p>
-        <p class="text-orange-500 font-extrabold italic text-2xl">
-          Rp 1,516,666.67
-        </p>
-        <p class="text-xs text-gray-500">+5.7% dari bulan lalu</p>
-      </div>
-    </section>
+   
   </main>
 </body>
 </html>

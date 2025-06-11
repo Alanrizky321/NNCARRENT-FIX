@@ -188,3 +188,17 @@ Route::middleware('auth')->group(function () {
     ->where('file', '.*')  // wildcard supaya menangkap folder dan nama file dengan slash
     ->name('pesananadmin.download');
 //});
+
+
+
+
+
+
+
+
+   
+Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/baru', [LaporanController::class, 'create'])->name('laporan.baru');
+    Route::post('/', [LaporanController::class, 'store'])->name('laporan.store');
+    Route::get('/{id}', [LaporanController::class, 'show'])->name('laporan.show');
+    Route::delete('/{id}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
