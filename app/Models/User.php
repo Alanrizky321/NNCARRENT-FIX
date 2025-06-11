@@ -2,21 +2,20 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable
-
+class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
@@ -27,7 +26,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -35,15 +34,42 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    /**
+     * Create a new user within a transaction.
+     *
+     * @param array $data
+     * @return User|null
+     */
+    public static function createUserWithTransaction(array $data)
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        DB::beginTransaction(); // Memulai transaksi
+
+        try {
+            // Membuat user baru
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+            ]);
+
+            // Tambahkan lebih banyak operasi database jika perlu di sini
+
+            DB::commit(); // Jika semua operasi berhasil, commit transaksi
+            return $user; // Mengembalikan objek user yang baru dibuat
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Jika terjadi error, rollback transaksi
+            // Tangani error (misalnya log error atau beri pesan kesalahan)
+            return null;
+        }
     }
 }

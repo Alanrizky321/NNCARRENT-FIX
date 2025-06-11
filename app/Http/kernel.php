@@ -24,6 +24,7 @@ class Kernel extends HttpKernel
         \Illuminate\Session\Middleware\EncryptCookies::class,
         \Illuminate\Http\Middleware\SetCacheHeaders::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
     ];
 
     /**
@@ -61,5 +62,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'admin' => \App\Http\Middleware\CheckAdmin::class,   // Middleware Admin
         'customer' => \App\Http\Middleware\CheckCustomer::class, // Middleware Pelanggan
+        'cek.pesanan' => \App\Http\Middleware\CekPesananMiddleware::class,
     ];
 }

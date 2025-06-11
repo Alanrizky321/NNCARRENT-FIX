@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>NNCarRent</title>
+    <title>Pemesanan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
@@ -14,6 +14,7 @@
         }
     </style>
 </head>
+
 
 <body class="bg-white text-gray-700">
     <div class="max-w-7xl mx-auto px-6 py-10">
@@ -47,28 +48,28 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm mb-1" for="phone_number">Nomor Telepon</label>
-                        <input class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF2E2E]" 
-                               id="phone_number" name="phone_number" required type="text" value="{{ old('phone_number', Auth::user()->phone_number ?? '') }}" />
-                        @error('phone_number')
-                        <span class="text-red-600 text-sm">{{ $message }}</span>
-                        @enderror
-                        <span id="phone_number_error" class="text-red-600 text-sm" style="display:none;">
-                            Nomor telepon harus sesuai dengan akun Anda.
-                        </span>
-                    </div>
+    <label class="block text-sm mb-1" for="phone_number">Nomor Telepon</label>
+    <input class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF2E2E]" 
+           id="phone_number" name="phone_number" required type="text" value="{{ old('phone_number', Auth::user()->phone_number ?? '') }}" />
+    @error('phone_number')
+    <span class="text-red-600 text-sm">{{ $message }}</span>
+    @enderror
+    <span id="phone_number_error" class="text-red-600 text-sm" style="display:none;">
+        Nomor telepon harus sesuai dengan akun Anda.
+    </span>
+</div>
 
-                    <div>
-                        <label class="block text-sm mb-1" for="email">Email</label>
-                        <input class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF2E2E]" 
-                               id="email" name="email" required type="email" value="{{ old('email', Auth::user()->email ?? '') }}" />
-                        @error('email')
-                        <span class="text-red-600 text-sm">{{ $message }}</span>
-                        @enderror
-                        <span id="email_error" class="text-red-600 text-sm" style="display:none;">
-                            Email harus sesuai dengan akun Anda.
-                        </span>
-                    </div>
+<div>
+    <label class="block text-sm mb-1" for="email">Email</label>
+    <input class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF2E2E]" 
+           id="email" name="email" required type="email" value="{{ old('email', Auth::user()->email ?? '') }}" />
+    @error('email')
+    <span class="text-red-600 text-sm">{{ $message }}</span>
+    @enderror
+    <span id="email_error" class="text-red-600 text-sm" style="display:none;">
+        Email harus sesuai dengan akun Anda.
+    </span>
+</div>
 
                     <div class="flex gap-6">
                         <div class="flex-1">

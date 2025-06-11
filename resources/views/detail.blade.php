@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Toyota Alpard Rental</title>
+    <title>Detail</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <style>
@@ -13,6 +13,8 @@
         }
     </style>
 </head>
+
+
 <body>
 @extends('layouts.app')
 
@@ -20,6 +22,52 @@
 <a href="{{ route('kategori') }}" class="fixed top-4 left-4 text-red-600 hover:text-red-800 inline-flex items-center z-50">
         <i class="fas fa-arrow-left mr-2"></i> Kembali ke Kategori
     </a>
+
+  
+<body class="bg-white text-gray-900">
+<header class="bg-gray-900 text-white">
+    <nav class="bg-[#2a2727] flex items-center justify-between px-6 py-4">
+        <div class="text-[#ff2a2a] font-extrabold text-xl select-none">NNCARRENT</div>
+        <ul class="flex space-x-6 text-white text-sm font-normal">
+            <li class="cursor-pointer hover:underline"><a href="{{ route('dashboard') }}">Beranda</a></li>
+            <li class="cursor-pointer hover:underline"><a href="{{ route('tentangkami') }}">Tentang kami</a></li>
+            <li class="cursor-pointer text-[#b96a6a] hover:underline">Daftar Mobil</li>
+        </ul>
+          </ul>
+<div class="flex space-x-2 items-center">
+  @if (!Auth::guard('admin')->check() && !Auth::guard('pelanggan')->check())
+    <!-- Jika belum login, tampilkan tombol Register dan Login -->
+    <a href="{{ route('register') }}" class="bg-gray-600 text-white text-xs px-3 py-1 rounded-md hover:bg-gray-700 transition-colors duration-300">
+      Register
+    </a>
+    <a href="{{ route('login') }}" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
+      Login
+    </a>
+  @else
+    <!-- Debug untuk memastikan guard aktif -->
+
+    <!-- Jika sudah login, tampilkan email dan tombol Logout -->
+    <span class="text-white text-xs truncate max-w-[150px]">
+      @php
+          $user = null;
+          if (Auth::guard('admin')->check()) {
+              $user = Auth::guard('admin')->user();
+          } elseif (Auth::guard('pelanggan')->check()) {
+              $user = Auth::guard('pelanggan')->user();
+          }
+          echo $user ? ($user->email ?? 'Email Tidak Ditemukan') : 'Pengguna Tidak Ditemukan';
+      @endphp
+    </span>
+    <form action="{{ route('logout') }}" method="POST">
+      @csrf
+      <button type="submit" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
+        Logout
+      </button>
+    </form>
+  @endif
+</div>
+    </nav>
+</header>
 
     <div class="max-w-7xl mx-auto px-6 py-8">
         <div class="flex flex-col lg:flex-row gap-8">

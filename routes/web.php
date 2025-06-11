@@ -172,6 +172,7 @@ Route::get('/laporanadmin', [LaporanController::class, 'index'])->name('laporana
 Route::middleware('auth')->group(function () {
     Route::get('/booking/form', [PesanController::class, 'create'])->name('booking.form');
     //Route::post('/datadiri/store', [PesanController::class, 'store'])->name('datadiri.store');
+    
     Route::get('/konfirmasipesanan/{pesan}', [PesanController::class, 'konfirmasi'])->name('konfirmasipesanan');
     Route::post('/pembayaran/store/{pesan}', [PesanController::class, 'pembayaranStore'])->name('pembayaran.store');
     Route::get('/pembayaran/proses/{pesan}', function () {
