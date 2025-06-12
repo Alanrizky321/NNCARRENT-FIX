@@ -247,7 +247,7 @@
   <section class="bg-[#e6e6e6] mt-16 py-10 px-6 max-w-[1980px] mx-auto text-center text-black text-[10px] md:text-xs leading-tight">
     <div class="max-w-[900px] mx-auto">
       <h4 class="font-semibold mb-2">
-        Sewa Mobil Tanpa Sopir
+        Sewa Mobil Tanpa Sopirr
       </h4>
       <p class="mb-4">
         Nikmati perjalanan yang lebih seru bersama keluarga atau kerabat dengan memilih
