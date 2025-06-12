@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('laporans', function (Blueprint $table) {
             $table->id();
             $table->date('tanggal_laporan');
-            $table->string('jenis_laporan');
+            $table->enum('jenis_laporan', ['mingguan', 'bulanan', 'tahunan']);
             $table->decimal('total', 15, 2);
-            $table->text('deskripsi')->nullable(); // Tambahan kolom deskripsi
+            $table->text('deskripsi')->nullable();
             $table->timestamps();
         });
     }

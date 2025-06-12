@@ -42,16 +42,18 @@
                 <div>
                     <label for="jenis" class="block text-gray-900 font-semibold italic text-sm mb-1">Jenis Laporan</label>
                     <div class="relative">
-                        <input
-                            type="text"
+                        <select
                             id="jenis"
                             name="jenis"
-                            value="{{ old('jenis') }}"
-                            placeholder="Masukkan jenis laporan"
-                            class="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                        />
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                        >
+                            <option value="" {{ old('jenis') ? '' : 'selected' }} disabled>Pilih jenis laporan</option>
+                            <option value="mingguan" {{ old('jenis') == 'mingguan' ? 'selected' : '' }}>Mingguan</option>
+                            <option value="bulanan" {{ old('jenis') == 'bulanan' ? 'selected' : '' }}>Bulanan</option>
+                            <option value="tahunan" {{ old('jenis') == 'tahunan' ? 'selected' : '' }}>Tahunan</option>
+                        </select>
                         <span class="absolute inset-y-0 right-3 flex items-center text-gray-400 pointer-events-none">
-                            <i class="fas fa-chevron-right"></i>
+                            <i class="fas fa-chevron-down"></i>
                         </span>
                         @error('jenis')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>

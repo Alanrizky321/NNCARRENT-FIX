@@ -22,11 +22,15 @@
             </div>
             <div>
                 <p class="font-semibold italic text-sm text-gray-700">Jenis Laporan</p>
-                <p class="text-gray-900">{{ $laporan->total_laporan }}</p>
+                <p class="text-gray-900">{{ ucfirst($laporan->jenis_laporan) }}</p>
             </div>
             <div>
                 <p class="font-semibold italic text-sm text-gray-700">Total (Rp)</p>
                 <p class="text-gray-900">Rp {{ number_format($laporan->total, 2, ',', '.') }}</p>
+            </div>
+            <div class="sm:col-span-2">
+                <p class="font-semibold italic text-sm text-gray-700">Deskripsi</p>
+                <p class="text-gray-900">{{ $laporan->deskripsi ?? 'Tidak ada deskripsi' }}</p>
             </div>
         </div>
         <div class="mt-6">
