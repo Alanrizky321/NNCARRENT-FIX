@@ -24,35 +24,23 @@
         </ul>
           </ul>
 <div class="flex space-x-2 items-center">
-  @if (!Auth::guard('admin')->check() && !Auth::guard('pelanggan')->check())
-    <!-- Jika belum login, tampilkan tombol Register dan Login -->
+  @if (Auth::guard('pelanggan')->check())
+    <span class="text-white text-xs truncate max-w-[150px]">
+      {{ Auth::guard('pelanggan')->user()->email }}
+    </span>
+    <form action="{{ route('pelanggan.logout') }}" method="POST">
+      @csrf
+      <button type="submit" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
+        Logout
+      </button>
+    </form>
+  @else
     <a href="{{ route('register') }}" class="bg-gray-600 text-white text-xs px-3 py-1 rounded-md hover:bg-gray-700 transition-colors duration-300">
       Register
     </a>
     <a href="{{ route('login') }}" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
       Login
     </a>
-  @else
-    <!-- Debug untuk memastikan guard aktif -->
-
-    <!-- Jika sudah login, tampilkan email dan tombol Logout -->
-    <span class="text-white text-xs truncate max-w-[150px]">
-      @php
-          $user = null;
-          if (Auth::guard('admin')->check()) {
-              $user = Auth::guard('admin')->user();
-          } elseif (Auth::guard('pelanggan')->check()) {
-              $user = Auth::guard('pelanggan')->user();
-          }
-          echo $user ? ($user->email ?? 'Email Tidak Ditemukan') : 'Pengguna Tidak Ditemukan';
-      @endphp
-    </span>
-    <form action="{{ route('logout') }}" method="POST">
-      @csrf
-      <button type="submit" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
-        Logout
-      </button>
-    </form>
   @endif
 </div>
     </nav>

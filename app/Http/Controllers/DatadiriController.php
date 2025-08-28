@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Pesan;
@@ -7,14 +8,12 @@ use Illuminate\Http\Request;
 
 class DatadiriController extends Controller
 {
-    // Tampilkan form pemesanan
     public function showForm($mobil_id)
     {
         $mobil = Mobil::findOrFail($mobil_id);
         return view('datadiri', compact('mobil'));
     }
 
-    // Simpan data pesanan dan redirect ke konfirmasi
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -27,14 +26,27 @@ class DatadiriController extends Controller
             'ktp_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'sim_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'bukti_pembayaran' => 'required|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
-            'pickup_method' => 'required|in:ambil-garasi,antar-jemput',  // enum DB values
+            'pickup_method' => 'required|in:ambil-garasi,antar-jemput',
             'lokasi_antar' => 'nullable|string|max:255',
             'lokasi_jemput' => 'nullable|string|max:255',
+            'total_bayar' => 'required|numeric|min:0', // Validasi input total_bayar
         ]);
 
         $ktpPath = $request->file('ktp_photo')->store('ktp_photos', 'public');
         $simPath = $request->file('sim_photo')->store('sim_photos', 'public');
         $buktiPembayaranPath = $request->file('bukti_pembayaran')->store('bukti_pembayaran', 'public');
+
+        // Hitung ulang total_harga di server untuk keamanan
+        $mobil = Mobil::findOrFail($validated['mobil_id']);
+        $hargaSewa = $mobil->Harga_Sewa;
+        $biayaAntarJemput = 50000;
+        $rentalDate = new \DateTime($validated['rental_date']);
+        $returnDate = new \DateTime($validated['return_date']);
+        $durasiSewa = max(1, $rentalDate->diff($returnDate)->days);
+        $totalHarga = $hargaSewa * $durasiSewa;
+        if ($validated['pickup_method'] === 'antar-jemput') {
+            $totalHarga += $biayaAntarJemput;
+        }
 
         $pesan = Pesan::create([
             'mobil_id' => $validated['mobil_id'],
@@ -49,6 +61,7 @@ class DatadiriController extends Controller
             'antar_jemput' => $validated['pickup_method'],
             'lokasi_antar' => $validated['lokasi_antar'] ?? null,
             'lokasi_jemput' => $validated['lokasi_jemput'] ?? null,
+            'total_harga' => $totalHarga, // Simpan total_harga
         ]);
 
         return redirect()->route('konfirmasi.show', ['pesan' => $pesan->id])

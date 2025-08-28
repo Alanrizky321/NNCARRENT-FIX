@@ -22,35 +22,91 @@ class AuthController extends Controller
     // Proses login untuk admin atau pelanggan
     public function login(Request $request)
     {
-        // Validasi input
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
         try {
-            // Cek apakah email ada di tabel admin
             if (Admin::where('email', $request->email)->exists()) {
                 if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
+                    $request->session()->regenerate();
+                    $request->session()->put('auth_guard', 'admin');
+                    Log::info('Admin Login - Session ID: ' . session()->getId());
+                    Log::info('Admin Login - User ID: ' . Auth::guard('admin')->id());
+                    Log::info('Admin Login - User Email: ' . Auth::guard('admin')->user()->email);
                     return redirect()->route('dashboardadmin')->with('success', 'Login Admin berhasil!');
                 }
-            }
-            // Cek apakah email ada di tabel pelanggan
-            elseif (Pelanggan::where('email', $request->email)->exists()) {
+            } elseif (Pelanggan::where('email', $request->email)->exists()) {
                 if (Auth::guard('pelanggan')->attempt(['email' => $request->email, 'password' => $request->password])) {
+                    $request->session()->regenerate();
+                    $request->session()->put('auth_guard', 'pelanggan');
+                    Log::info('Pelanggan Login - Session ID: ' . session()->getId());
+                    Log::info('Pelanggan Login - User ID: ' . Auth::guard('pelanggan')->id());
+                    Log::info('Pelanggan Login - User Email: ' . Auth::guard('pelanggan')->user()->email);
                     return redirect()->route('dashboard')->with('success', 'Login Pelanggan berhasil!');
                 }
             }
 
+            Log::info('Login gagal untuk email: ' . $request->email);
             return back()->withErrors([
                 'email' => 'Email atau password salah.',
             ])->withInput();
         } catch (\Exception $e) {
-            // Catat error untuk debugging
             Log::error('Login error: ' . $e->getMessage());
             return back()->withErrors([
-                'email' => 'Email atau password salah.',
+                'email' => 'Terjadi kesalahan, coba lagi nanti.',
             ])->withInput();
+        }
+    }
+
+    // Proses login admin
+    public function adminLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        try {
+            if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
+                $request->session()->regenerate();
+                $request->session()->put('auth_guard', 'admin');
+                Log::info('Admin Login (adminLogin) - Session ID: ' . session()->getId());
+                Log::info('Admin Login (adminLogin) - User ID: ' . Auth::guard('admin')->id());
+                Log::info('Admin Login (adminLogin) - User Email: ' . Auth::guard('admin')->user()->email);
+                return redirect()->route('dashboardadmin')->with('success', 'Login Admin berhasil!');
+            }
+            Log::info('Admin login gagal untuk email: ' . $request->email);
+            return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
+        } catch (\Exception $e) {
+            Log::error('Admin login error: ' . $e->getMessage());
+            return back()->withErrors(['email' => 'Terjadi kesalahan, coba lagi nanti.'])->withInput();
+        }
+    }
+
+    // Proses login pelanggan
+    public function pelangganLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        try {
+            if (Auth::guard('pelanggan')->attempt(['email' => $request->email, 'password' => $request->password])) {
+                $request->session()->regenerate();
+                $request->session()->put('auth_guard', 'pelanggan');
+                Log::info('Pelanggan Login (pelangganLogin) - Session ID: ' . session()->getId());
+                Log::info('Pelanggan Login (pelangganLogin) - User ID: ' . Auth::guard('pelanggan')->id());
+                Log::info('Pelanggan Login (pelangganLogin) - User Email: ' . Auth::guard('pelanggan')->user()->email);
+                return redirect()->route('dashboard')->with('success', 'Login Pelanggan berhasil!');
+            }
+            Log::info('Pelanggan login gagal untuk email: ' . $request->email);
+            return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
+        } catch (\Exception $e) {
+            Log::error('Pelanggan login error: ' . $e->getMessage());
+            return back()->withErrors(['email' => 'Terjadi kesalahan, coba lagi nanti.'])->withInput();
         }
     }
 
@@ -63,7 +119,6 @@ class AuthController extends Controller
     // Proses registrasi pelanggan
     public function register(Request $request)
     {
-        // Validasi input
         $request->validate([
             'email' => 'required|email|unique:pelanggan,email',
             'no_hp' => 'required|string|max:13',
@@ -71,39 +126,58 @@ class AuthController extends Controller
         ]);
 
         try {
-            // Simpan data pelanggan ke database
             $pelanggan = Pelanggan::create([
                 'email' => $request->email,
                 'no_hp' => $request->no_hp,
                 'password' => Hash::make($request->password),
             ]);
 
-            // Redirect ke halaman login dengan pesan sukses
+            Log::info('Registrasi pelanggan berhasil untuk email: ' . $request->email);
             return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
         } catch (\Exception $e) {
-            // Catat error untuk debugging
             Log::error('Registrasi error: ' . $e->getMessage());
             return back()->withErrors(['email' => 'Terjadi kesalahan saat registrasi. Coba lagi nanti.'])->withInput();
         }
     }
 
-    // Logout pengguna (admin atau pelanggan)
+    // Logout admin
+    public function adminLogout(Request $request)
+    {
+        Log::info('Admin Logout - Session ID sebelum logout: ' . session()->getId());
+        Auth::guard('admin')->logout();
+        $request->session()->forget('auth_guard');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        Log::info('Admin Logout - Session ID setelah logout: ' . session()->getId());
+        return redirect()->route('login')->with('success', 'Anda telah logout.');
+    }
+
+    // Logout pelanggan
+    public function pelangganLogout(Request $request)
+    {
+        Log::info('Pelanggan Logout - Session ID sebelum logout: ' . session()->getId());
+        Auth::guard('pelanggan')->logout();
+        $request->session()->forget('auth_guard');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        Log::info('Pelanggan Logout - Session ID setelah logout: ' . session()->getId());
+        return redirect()->route('login')->with('success', 'Anda telah logout.');
+    }
+
+    // Logout umum (fallback)
     public function logout(Request $request)
     {
-        Log::info('Logout dipanggil.');
-
-        if (Auth::guard('admin')->check()) {
-            Log::info('Logout admin');
-            Auth::guard('admin')->logout();
-        } elseif (Auth::guard('pelanggan')->check()) {
-            Log::info('Logout pelanggan');
-            Auth::guard('pelanggan')->logout();
+        $guard = $request->session()->get('auth_guard');
+        Log::info('Logout umum dipanggil untuk guard: ' . ($guard ?? 'tidak ada'));
+        if ($guard === 'admin') {
+            return $this->adminLogout($request);
+        } elseif ($guard === 'pelanggan') {
+            return $this->pelangganLogout($request);
         }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect('/login')->with('success', 'Anda telah logout.');
+        return redirect()->route('login')->with('success', 'Anda telah logout.');
     }
 
     // Menampilkan form untuk reset password
@@ -120,17 +194,14 @@ class AuthController extends Controller
         ]);
 
         try {
-            // Cek apakah email ada di tabel admin atau pelanggan
             $broker = Admin::where('email', $request->email)->exists() ? 'admins' : 'pelanggan';
-
-            // Jika email tidak ada di kedua tabel
             if (!Admin::where('email', $request->email)->exists() && !Pelanggan::where('email', $request->email)->exists()) {
+                Log::info('Reset password gagal: Email tidak ditemukan - ' . $request->email);
                 return back()->withErrors(['email' => 'Email tidak ditemukan.']);
             }
 
-            // Kirim link reset password
             $response = Password::broker($broker)->sendResetLink(['email' => $request->email]);
-
+            Log::info('Reset password link dikirim untuk email: ' . $request->email . ' - Status: ' . $response);
             return $response === Password::RESET_LINK_SENT
                 ? back()->with('status', trans($response))
                 : back()->withErrors(['email' => trans($response)]);
@@ -156,15 +227,12 @@ class AuthController extends Controller
         ]);
 
         try {
-            // Tentukan broker berdasarkan tabel tempat email ditemukan
             $broker = Admin::where('email', $request->email)->exists() ? 'admins' : 'pelanggan';
-
-            // Cek apakah email ada di tabel yang sesuai
             if (!Admin::where('email', $request->email)->exists() && !Pelanggan::where('email', $request->email)->exists()) {
+                Log::info('Reset password gagal: Email tidak ditemukan - ' . $request->email);
                 return back()->withErrors(['email' => 'Email tidak ditemukan.']);
             }
 
-            // Proses reset password
             $response = Password::broker($broker)->reset(
                 $request->only('email', 'password', 'password_confirmation', 'token'),
                 function ($user, $password) {
@@ -175,6 +243,7 @@ class AuthController extends Controller
                 }
             );
 
+            Log::info('Reset password status untuk email: ' . $request->email . ' - Status: ' . $response);
             return $response === Password::PASSWORD_RESET
                 ? redirect()->route('login')->with('status', trans($response))
                 : back()->withErrors(['email' => trans($response)]);

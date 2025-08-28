@@ -41,6 +41,8 @@ public function user(): BelongsTo
     {
         return $this->belongsTo(Mobil::class, 'mobil_id', 'ID_Mobil');
     }
+
+    
 }
 
 

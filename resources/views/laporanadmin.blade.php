@@ -66,9 +66,12 @@
         <div class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-xs font-semibold text-gray-500 select-none">
           OK
         </div>
-       <div class="hidden md:flex items-center space-x-4 ml-6">
-                <span class="text-sm truncate max-w-xs">{{ Auth::guard('admin')->user()->email }}</span>
-            </div>
+      <div class="flex items-center space-x-4">
+  <div class="hidden md:flex items-center space-x-4 ml-6">
+    <span class="text-sm truncate max-w-xs select-text">{{ Auth::guard('admin')->user()->email }}</span>
+    <i class="fas fa-user-circle text-2xl text-gray-500"></i>
+  </div>
+</div>
       </div>
     </header>
 

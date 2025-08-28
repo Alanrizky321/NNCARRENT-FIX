@@ -24,7 +24,7 @@
         </div>
         <nav class="flex flex-row md:flex-col space-x-4 md:space-x-0 md:space-y-6 text-gray-900 text-sm font-normal w-full md:w-auto" id="sidebarNav">
             <a class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 whitespace-nowrap" href="{{ route('dashboardadmin') }}">
-          <i class="fas fa-th-large text-lg"></i>
+                <i class="fas fa-th-large text-lg"></i>
                 <span>Dashboard</span>
             </a>
             <a class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 whitespace-nowrap" href="{{ route('pesananadmin') }}">
@@ -39,13 +39,13 @@
                 <i class="fas fa-file-alt text-lg"></i>
                 <span>Laporan</span>
             </a>
-             <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
-            <i class="fas fa-sign-out-alt text-lg"></i>
-            <span>Logout</span>
-          </button>
-        </form>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
         </nav>
     </aside>
 
@@ -59,8 +59,16 @@
                     <i class="fas fa-search"></i>
                 </button>
             </form>
-            <div class="hidden md:flex items-center space-x-4 ml-6">
-                <span class="text-sm truncate max-w-xs">{{ Auth::guard('admin')->user()->email }}</span>
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-4 ml-6">
+                    @if (Auth::guard('admin')->check())
+                        <span class="text-sm truncate max-w-xs select-text">{{ Auth::guard('admin')->user()->email }}</span>
+                        <i class="fas fa-user-circle text-2xl text-gray-500"></i>
+                    @else
+                        <span class="text-sm truncate max-w-xs select-text">Guest</span>
+                        <i class="fas fa-user-circle text-2xl text-gray-500"></i>
+                    @endif
+                </div>
             </div>
         </header>
 

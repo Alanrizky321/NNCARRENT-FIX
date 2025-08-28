@@ -197,7 +197,7 @@
 </head>
 <body>
     <div class="nncarrent-text">
-        <a href="{{ route('home') }}" style="text-decoration: none; color: inherit;">NNCARRENT</a>
+        <a href="{{ route('dashboard') }}" style="text-decoration: none; color: inherit;">NNCARRENT</a>
     </div>
 
     <div class="container-login">
