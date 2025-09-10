@@ -38,19 +38,16 @@ class MobilController extends Controller
 
         $data = $request->all();
 
-        if ($request->hasFile('Foto')) {
-            $file = $request->file('Foto');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $path = 'public-storage/mobil';
-            $file->move($path, $filename);
-            $data['Foto'] = $path.'/'.$filename;
-        }
+    if ($request->hasFile('Foto')) {
+    $file = $request->file('Foto');
+    $filename = time().'_'.$file->getClientOriginalName();
+    $path = $file->storeAs('public/mobil', $filename);
+    $data['Foto'] = 'storage/mobil/'.$filename; // simpan path ke DB
+}
+    Mobil::create($data);
 
-        Mobil::create($data);
-
-        return redirect()->route('daftarmobiladmin')->with('success', 'Data mobil berhasil ditambahkan.');
-    }
-
+    return redirect()->route('daftarmobiladmin')->with('success', 'Data mobil berhasil ditambahkan.');
+}
     public function show($id)
 {
     // Jika primary key di databasenya bernama ID_Mobil, override di Model-nya atau pakai:

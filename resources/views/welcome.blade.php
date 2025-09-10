@@ -58,12 +58,14 @@
           echo $user ? ($user->email ?? 'Email Tidak Ditemukan') : 'Pengguna Tidak Ditemukan';
       @endphp
     </span>
-    <form action="{{ route('logout') }}" method="POST">
-      @csrf
-      <button type="submit" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
-        Logout
-      </button>
-    </form>
+    <form action="{{ route('admin.logout') }}" method="POST">
+    @csrf
+    <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
+        <i class="fas fa-sign-out-alt text-lg"></i>
+        <span>Logout</span>
+    </button>
+</form>
+
   @endif
 </div>
     </nav>

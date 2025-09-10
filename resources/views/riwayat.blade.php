@@ -23,8 +23,8 @@
         /* Sidebar */
         .sidebar {
             width: 250px;
-            background-color: white;
-            border-right: 2px solid #e5e7eb;
+            background-color: black;
+            border-right: 2px solid #0a0a0aff;
             padding: 20px;
             position: relative;
         }
@@ -215,7 +215,7 @@
                        :class="{ 'active': activeTab === 'dashboard' }"
                        @click="activeTab = 'dashboard'">
                         <i class="fas fa-home menu-icon"></i>
-                        Dashboard
+                        Kembali Ke Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
@@ -227,82 +227,55 @@
                         Riwayat Penyewaan
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('ulasan') }}" 
-                       class="nav-link"
-                       :class="{ 'active': activeTab === 'ulasan' }"
-                       @click="activeTab = 'ulasan'">
-                        <i class="fas fa-star menu-icon"></i>
-                        Ulasan
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" 
-                       class="nav-link"
-                       :class="{ 'active': activeTab === 'notifikasi' }"
-                       @click="activeTab = 'notifikasi'">
-                        <i class="fas fa-bell menu-icon"></i>
-                        Notifikasi
-                    </a>
-                </li>
-
-                <!-- Kategori Sidebar -->
-                <li class="nav-item">
-                    <a href="{{ route('kategori') }}" 
-                       class="nav-link"
-                       :class="{ 'active': activeTab === 'kategori' }"
-                       @click="activeTab = 'kategori'">
-                        <i class="fas fa-th-large menu-icon"></i>
-                        Kategori
-                    </a>
-                </li>
+             
             </ul>
-            <img src="web.jpg" alt="Logo" class="logo">
+  
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <div class="header">
-                <h1 class="welcome">RIWAYAT PENYEWAAN</h1>
-                <div class="profile-container">
-                    <i class="fas fa-user-circle profile-icon"></i>
-                    <div class="profile-info">
-                        <div class="user-email">HajiAlan@nncarrent.com</div>
-                    </div>
-                </div>
-            </div>
+    <div class="header">
+        <h1 class="welcome">RIWAYAT PENYEWAAN</h1>
+        <div class="profile-container"></div>
+    </div>
 
-            <!-- Rental History Cards -->
+    @if($pesanan->isEmpty())
+        <p>Tidak ada riwayat penyewaan.</p>
+    @else
+        @foreach($pesanan as $p)
             <div class="card">
                 <div class="car-info-container">
-                    <img src="alphard.jpg" alt="Toyota Alphard" class="car-image">
-                    <div class="car-details">
-                        <h2 class="car-title">Toyota Alphard</h2>
-                        <p>MPV</p>
-                        <p>Tanggal Penyewaan: 1/06/2025 - 12/05/2025</p>
+                    {{-- kalau ada relasi ke mobil --}}
+                    @if($p->mobil && $p->mobil->Foto)
+                    <img src="{{ asset($p->mobil->Foto) }}" alt="Mobil" class="car-image">
+                    
+                    @endif
+                    <div>
+                        <h2 class="car-title">
+                            {{ $p->mobil ? $p->mobil->Merek.' '.$p->mobil->Model : 'Mobil tidak ditemukan' }}
+                        </h2>
+                        <div class="car-details">
+                            <p><strong>Tanggal Sewa:</strong> {{ $p->tanggal_mulai }}</p>
+                            <p><strong>Tanggal Kembali:</strong> {{ $p->tanggal_selesai }}</p>
+                            <p><strong>Status:</strong> {{ ucfirst($p->status) }}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="price-action-container">
-                    <p class="price">Rp 1.000.000.00 / hari</p>
-                    <button class="btn">Detail</button>
-                </div>
-            </div>
+               <div class="price-action-container">
+    <p class="price">Rp {{ number_format($p->total_harga, 0, ',', '.') }}</p>
 
-            <div class="card">
-                <div class="car-info-container">
-                    <img src="avanza.jpg" alt="Toyota Avanza" class="car-image">
-                    <div class="car-details">
-                        <h2 class="car-title">Toyota Avanza</h2>
-                        <p>MPV</p>
-                        <p>Tanggal Penyewaan: 15/06/2025 - 20/06/2025</p>
-                    </div>
-                </div>
-                <div class="price-action-container">
-                    <p class="price">Rp 500.000.00 / hari</p>
-                    <button class="btn">Detail</button>
+    <!-- Tombol Reschedule -->
+    <a href="{{ route('pesanan.reschedule', $p->id) }}" class="btn">Reschedule</a>
+</div>
+        @endforeach
+    @endif
+</div>
+
+
                 </div>
             </div>
         </div>
     </div>
+    
 </body>
 </html>

@@ -16,87 +16,46 @@ class PesanController extends Controller
         // Contoh: $mobil = Mobil::find($request->input('mobil_id'));
         return view('datadiri');
     }
+public function store(Request $request)
+{
+    try {
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->withErrors(['error' => 'Silakan login terlebih dahulu.']);
+        }
 
-    public function store(Request $request)
-    {
-        try {
-            // Periksa apakah pengguna terautentikasi
-            $user = Auth::user();
-            if (!$user) {
-                Log::error('User not authenticated');
-                return redirect()->route('login')->withErrors(['error' => 'Silakan login terlebih dahulu.']);
-            }
+        // Validasi input
+        $validated = $request->validate([
+            'mobil_id' => 'required|exists:mobils,ID_Mobil',
+            'customer_name' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:15',
+            'email' => 'required|email|max:255',
+            'rental_date' => 'required|date|after_or_equal:' . now()->addDays(2)->toDateString(),
+            'return_date' => 'required|date|after:rental_date',
+            'ktp_photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'sim_photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'total_harga' => 'required|numeric|min:0', // ✅ ditambahkan validasi
+        ]);
 
-            // Log input untuk debugging
-            Log::debug('Input data', $request->all());
+        // Simpan file ke public biar bisa diakses
+        $ktpPath = $request->file('ktp_photo')->store('ktp_photos', 'public');
+        $simPath = $request->file('sim_photo')->store('sim_photos', 'public');
 
-            // Validasi input
-            $validated = $request->validate([
-                'mobil_id' => 'required|exists:mobils,ID_Mobil', // Sesuai migrasi
-                'customer_name' => 'required|string|max:255',
-                'phone_number' => [
-                    'required',
-                    'string',
-                    'max:15',
-                    function ($attribute, $value, $fail) use ($user) {
-                        if (!$user->phone_number) {
-                            $fail('Akun Anda belum memiliki nomor telepon. Silakan perbarui profil.');
-                        }
-                        $normalizedInput = preg_replace('/[\s-+]/', '', $value);
-                        $normalizedUser = preg_replace('/[\s-+]/', '', $user->phone_number);
-                        if ($normalizedInput !== $normalizedUser) {
-                            $fail('Nomor telepon harus sesuai dengan akun Anda.');
-                        }
-                    },
-                ],
-                'email' => [
-                    'required',
-                    'email',
-                    'max:255',
-                    function ($attribute, $value, $fail) use ($user) {
-                        if ($value !== $user->email) {
-                            $fail('Email harus sesuai dengan akun Anda.');
-                        }
-                    },
-                ],
-                'rental_date' => [
-                    'required',
-                    'date',
-                    'after_or_equal:' . now()->setTimezone('Asia/Jakarta')->addDays(2)->toDateString(),
-                ],
-                'return_date' => [
-                    'required',
-                    'date',
-                    'after:rental_date',
-                ],
-                'ktp_photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-                'sim_photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            ]);
-
-            Log::debug('Validated data', $validated);
-
-            // Periksa apakah disk private tersedia
-          
-
-            // Simpan file KTP dan SIM
-            $ktpPath = $request->file('ktp_photo')->store('ktp_photos', 'private');
-            $simPath = $request->file('sim_photo')->store('sim_photos', 'private');
-
-            // Buat record Pesan
-            $pesan = Pesan::create([
-                'user_id' => $user->id,
-                'mobil_id' => $validated['mobil_id'],
-                'nama_pelanggan' => $validated['customer_name'],
-                'nomor_hp' => $validated['phone_number'],
-                'email' => $validated['email'],
-                'tanggal_mulai' => $validated['rental_date'],
-                'tanggal_selesai' => $validated['return_date'],
-                'ktp_photo_path' => $ktpPath,
-                'sim_photo_path' => $simPath,
-                'verification_status' => 'pending',
-                'status' => 'pending',
-                'total_harga' => $validated['total_harga'],
-
+        // Simpan ke database
+        $pesan = Pesan::create([
+            'user_id' => $user->id,
+            'mobil_id' => $validated['mobil_id'],
+            'nama_pelanggan' => $validated['customer_name'],
+            'nomor_hp' => $validated['phone_number'],
+            'email' => $validated['email'],
+            'tanggal_mulai' => $validated['rental_date'],
+            'tanggal_selesai' => $validated['return_date'],
+            'ktp_photo_path' => $ktpPath,
+            'sim_photo_path' => $simPath,
+            'verification_status' => 'pending',
+            'status' => 'pending',
+            'total_harga' => $validated['total_harga'], 
+        
             ]);
 
             Log::info('Pesan created', ['pesan_id' => $pesan->id, 'user_id' => $user->id]);
@@ -120,8 +79,12 @@ class PesanController extends Controller
             return view('konfirmasipesanan', compact('pesan', 'durasi'));
         } catch (\Exception $e) {
             Log::error('Konfirmasi error: ' . $e->getMessage(), ['exception' => $e]);
-            return redirect()->back()->withErrors(['error' => 'Gagal memuat halaman konfirmasi.']);
-        }
+  return redirect()->route('konfirmasipesanan', $pesan->id)
+            ->with('success', 'Pemesanan berhasil! Menunggu verifikasi dokumen.');
+    } catch (\Exception $e) {
+        return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+    }
+
 
         
     }
@@ -151,4 +114,35 @@ class PesanController extends Controller
             return redirect()->back()->withErrors(['error' => 'Gagal menyimpan data konfirmasi: ' . $e->getMessage()]);
         }
     }
+
+
+public function reschedule($id)
+{
+    $pesanan = Pesanan::findOrFail($id);
+    return view('pesanan.reschedule', compact('pesanan'));
+}
+
+public function updateReschedule(Request $request, $id)
+{
+    $pesanan = Pesanan::findOrFail($id);
+
+    if ($pesanan->status != 'disetujui') {
+        return redirect()->route('riwayat')->with('error', 'Pesanan belum disetujui admin, tidak bisa di-reschedule.');
+    }
+
+    $request->validate([
+        'rental_date' => 'required|date|after_or_equal:today',
+        'return_date' => 'required|date|after:rental_date',
+    ]);
+
+    $pesanan->update([
+        'tanggal_mulai' => $request->rental_date,
+        'tanggal_selesai' => $request->return_date,
+    ]);
+
+    return redirect()->route('riwayat')->with('success', 'Tanggal penyewaan berhasil diubah.');
+}
+
+
+
 }

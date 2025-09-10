@@ -37,13 +37,14 @@
       <a href="#" aria-current="page" class="bg-red-500 text-white rounded-lg py-3 px-5 font-extrabold italic flex items-center">
         <i class="fas fa-file-alt mr-2"></i> Laporan
       </a>
-       <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
-            <i class="fas fa-sign-out-alt text-lg"></i>
-            <span>Logout</span>
-          </button>
-        </form>
+    <form action="{{ route('admin.logout') }}" method="POST">
+    @csrf
+    <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
+        <i class="fas fa-sign-out-alt text-lg"></i>
+        <span>Logout</span>
+    </button>
+</form>
+
     </nav>
   </aside>
 

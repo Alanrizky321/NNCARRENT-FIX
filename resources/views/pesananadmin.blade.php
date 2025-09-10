@@ -45,13 +45,14 @@
                 <i class="fas fa-file-alt text-lg"></i>
                 <span>Laporan</span>
             </a>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
-                    <i class="fas fa-sign-out-alt text-lg"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
+           <form action="{{ route('admin.logout') }}" method="POST">
+    @csrf
+    <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
+        <i class="fas fa-sign-out-alt text-lg"></i>
+        <span>Logout</span>
+    </button>
+</form>
+
         </nav>
     </aside>
 

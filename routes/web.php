@@ -67,7 +67,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
 
     // Rute Admin yang Dilindungi
-    Route::middleware(['auth:admin', 'admin'])->group(function () {
+    Route::middleware(['auth:admin'])->group(function () {
         Route::get('/dashboardadmin', [AdminDashboardController::class, 'index'])->name('dashboardadmin');
         Route::get('/pesananadmin', [PesananAdminController::class, 'index'])->name('pesananadmin');
         Route::post('/pesanan/{pesan}/verify', [PesananAdminController::class, 'verify'])->name('pesananadmin.verify');
@@ -95,7 +95,7 @@ Route::prefix('pelanggan')->group(function () {
     Route::post('/logout', [AuthController::class, 'pelangganLogout'])->name('pelanggan.logout');
 
     // Rute Pelanggan yang Dilindungi
-    Route::middleware(['auth:pelanggan', 'customer'])->group(function () {
+    Route::middleware(['auth:pelanggan'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
         Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan');
@@ -106,6 +106,11 @@ Route::prefix('pelanggan')->group(function () {
         Route::resource('pelanggan', PelangganController::class);
 
         // Booking
+        Route::get('/detail-pemesanan', [PemesananController::class, 'index'])->name('pelanggan.detailPemesanan');
+       Route::get('/pesanan/{id}/reschedule', [RiwayatController::class, 'reschedule'])->name('pesanan.reschedule');
+Route::put('/pesanan/{id}/reschedule', [RiwayatController::class, 'updateReschedule'])->name('pesanan.updateReschedule');
+
+
         Route::get('/booking/{mobil_id}', [DatadiriController::class, 'showForm'])->name('booking.create');
         Route::post('/booking/store', [DatadiriController::class, 'store'])->name('booking.store');
         Route::get('/datadiri/{mobil_id}', [DatadiriController::class, 'showForm'])->name('datadiri.create');
@@ -139,7 +144,6 @@ Route::resource('mobil', MobilController::class);
 Route::post('/mobil/{id}/restore', [MobilController::class, 'restore'])->name('mobil.restore');
 Route::delete('/mobil/{id}/force-delete', [MobilController::class, 'forceDelete'])->name('mobil.forceDelete');
 
-Route::resource('kategori', KategoriController::class);
 
 Route::prefix('laporan')->group(function () {
     Route::get('/', [LaporanController::class, 'index'])->name('laporan.index');

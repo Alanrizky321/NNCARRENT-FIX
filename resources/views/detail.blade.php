@@ -28,36 +28,41 @@
             <li class="cursor-pointer hover:underline"><a href="{{ route('tentangkami') }}">Tentang kami</a></li>
             <li class="cursor-pointer text-[#b96a6a] hover:underline">Daftar Mobil</li>
         </ul>
-        <div class="flex space-x-2 items-center">
-            @if (!Auth::guard('admin')->check() && !Auth::guard('pelanggan')->check())
-                <!-- Jika belum login, tampilkan tombol Register dan Login -->
-                <a href="{{ route('register') }}" class="bg-gray-600 text-white text-xs px-3 py-1 rounded-md hover:bg-gray-700 transition-colors duration-300">
-                    Register
-                </a>
-                <a href="{{ route('login') }}" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
-                    Login
-                </a>
-            @else
-                <!-- Jika sudah login, tampilkan email dan tombol Logout -->
-                <span class="text-white text-xs truncate max-w-[150px]">
-                    @php
-                        $user = null;
-                        if (Auth::guard('admin')->check()) {
-                            $user = Auth::guard('admin')->user();
-                        } elseif (Auth::guard('pelanggan')->check()) {
-                            $user = Auth::guard('pelanggan')->user();
-                        }
-                        echo $user ? ($user->email ?? 'Email Tidak Ditemukan') : 'Pengguna Tidak Ditemukan';
-                    @endphp
-                </span>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
-                        Logout
-                    </button>
-                </form>
-            @endif
-        </div>
+       <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+<div class="flex items-center space-x-2 relative" x-data="{ open: false }">
+  @if (Auth::guard('pelanggan')->check())
+    <!-- Icon User -->
+    <button @click="open = !open" class="text-white focus:outline-none">
+      <i class="fas fa-user-circle text-2xl"></i>
+    </button>
+
+    <!-- Dropdown -->
+    <div x-show="open" 
+         @click.away="open = false" 
+         class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50"
+         x-transition>
+      <a href="{{ route('riwayat') }}" 
+         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+        Detail Pemesanan
+      </a>
+      <form action="{{ route('pelanggan.logout') }}" method="POST">
+        @csrf
+        <button type="submit" 
+                class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+          Logout
+        </button>
+      </form>
+    </div>
+  @else
+    <a href="{{ route('register') }}" class="bg-gray-600 text-white text-xs px-3 py-1 rounded-md hover:bg-gray-700 transition-colors duration-300">
+      Register
+    </a>
+    <a href="{{ route('login') }}" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
+      Login
+    </a>
+  @endif
+</div>
     </nav>
 </header>
 
@@ -163,18 +168,9 @@
             <div class="flex flex-col gap-6">
                 <div class="flex gap-3">
                     <div class="flex flex-col items-center justify-center text-[14px] text-[#222222]">
-                        <i class="far fa-user-circle text-[20px]"></i>
-                        <span class="text-[11px] mt-1">octahyt@gmail.com</span>
+                        
                     </div>
-                    <div class="flex flex-col gap-1 text-[11px] text-[#222222]">
-                        <div class="star-yellow">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                        <p class="text-[10px]">Sangat puas dengan layanannya! Websitenya mudah digunakan, mobil datang tepat waktu dan dalam kondisi bersih. Terima kasih!</p>
+                 
                     </div>
                 </div>
             </div>

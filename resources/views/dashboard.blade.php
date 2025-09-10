@@ -29,18 +29,33 @@
       <li>
         <a href="{{ route('kategori') }}" class="cursor-pointer hover:underline">Daftar Mobil</a>
       </li>
-    </ul>
-<div class="flex space-x-2 items-center">
+    </ul><!-- Tambahkan di tag <head> -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+<div class="flex items-center space-x-2 relative" x-data="{ open: false }">
   @if (Auth::guard('pelanggan')->check())
-    <span class="text-white text-xs truncate max-w-[150px]">
-      {{ Auth::guard('pelanggan')->user()->email }}
-    </span>
-    <form action="{{ route('pelanggan.logout') }}" method="POST">
-      @csrf
-      <button type="submit" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
-        Logout
-      </button>
-    </form>
+    <!-- Icon User -->
+    <button @click="open = !open" class="text-white focus:outline-none">
+      <i class="fas fa-user-circle text-2xl"></i>
+    </button>
+
+    <!-- Dropdown -->
+    <div x-show="open" 
+         @click.away="open = false" 
+         class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50"
+         x-transition>
+      <a href="{{ route('riwayat') }}" 
+         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+        Detail Pemesanan
+      </a>
+      <form action="{{ route('pelanggan.logout') }}" method="POST">
+        @csrf
+        <button type="submit" 
+                class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+          Logout
+        </button>
+      </form>
+    </div>
   @else
     <a href="{{ route('register') }}" class="bg-gray-600 text-white text-xs px-3 py-1 rounded-md hover:bg-gray-700 transition-colors duration-300">
       Register
@@ -50,6 +65,7 @@
     </a>
   @endif
 </div>
+
   </nav>
 
   
