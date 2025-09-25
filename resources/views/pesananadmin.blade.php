@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,14 +44,13 @@
                 <i class="fas fa-file-alt text-lg"></i>
                 <span>Laporan</span>
             </a>
-           <form action="{{ route('admin.logout') }}" method="POST">
-    @csrf
-    <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
-        <i class="fas fa-sign-out-alt text-lg"></i>
-        <span>Logout</span>
-    </button>
-</form>
-
+            <form action="{{ route('admin.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
         </nav>
     </aside>
 
@@ -61,6 +59,10 @@
 
         @if (session('success'))
             <p class="text-green-600 mb-4">{{ session('success') }}</p>
+        @endif
+
+        @if (session('error'))
+            <p class="text-red-600 mb-4">{{ session('error') }}</p>
         @endif
 
         <section class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 overflow-x-auto max-w-7xl">
@@ -135,7 +137,14 @@
                                         {{ $pesan->lokasi_jemput ?? '-' }}
                                     </td>
                                     <td class="py-3 pr-4">
-                                        <button data-modal-target="detail-modal-{{ $pesan->id }}" class="bg-red-500 text-white rounded-md px-4 py-1 text-sm select-none">Detail</button>
+                                        @if ($pesan->status == 'pending')
+                                            <span class="inline-block text-xs rounded-full px-3 py-1 font-normal bg-yellow-100 text-yellow-700 select-none">
+                                                Belum Diverifikasi
+                                            </span>
+                                            <button data-modal-target="detail-modal-{{ $pesan->id }}" class="bg-red-500 text-white rounded-md px-4 py-1 text-sm select-none">Detail</button>
+                                        @else
+                                            <button data-modal-target="detail-modal-{{ $pesan->id }}" class="bg-red-500 text-white rounded-md px-4 py-1 text-sm select-none">Detail</button>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -265,9 +274,10 @@
                     <!-- Status Verifikasi -->
                     <section>
                         <h4 class="italic font-semibold text-xs text-[#1E1E1E] mb-2">Status Verifikasi</h4>
-                        @if ($pesan->verification_status == 'pending')
+                        @if ($pesan->status == 'pending')
                             <form action="{{ route('pesananadmin.verify', $pesan->id) }}" method="POST" class="space-y-3">
                                 @csrf
+                                <input type="hidden" name="action" value="verify">
                                 <div class="flex gap-3">
                                     <button type="submit" name="status" value="approved" class="bg-[#4CAF50] text-white rounded-lg px-6 py-2 italic font-semibold hover:bg-[#3B8B3B] transition">Terima</button>
                                     <button type="submit" name="status" value="rejected" class="bg-[#FF3B2F] text-white rounded-lg px-6 py-2 italic font-semibold hover:bg-[#D62E26] transition">Tolak</button>
@@ -276,11 +286,70 @@
                             </form>
                         @else
                             <span class="inline-block text-xs rounded-full px-3 py-1 font-normal select-none
-                                {{ $pesan->verification_status == 'approved' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}">
-                                {{ ucfirst($pesan->verification_status) }}
+                                {{ $pesan->verification_status == 'approved' ? 'bg-green-100 text-green-600' : 
+                                  ($pesan->verification_status == 'rejected' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-700') }}">
+                                {{ ucfirst($pesan->verification_status ?? 'pending') }}
                             </span>
                         @endif
                     </section>
+
+                    <!-- Verifikasi Reschedule -->
+                    @if ($pesan->status == 'pending' && !empty($pesan->reschedule_request))
+                        <section class="mt-4">
+                            <h4 class="italic font-semibold text-xs text-[#1E1E1E] mb-2">Verifikasi Reschedule</h4>
+                            <div class="space-y-2 mb-4">
+                                <p class="text-xs text-[#4B4B4B]">
+                                    Tanggal Mulai Baru: {{ \Carbon\Carbon::parse($pesan->reschedule_request['tanggal_mulai'])->format('d M Y') }}
+                                </p>
+                                <p class="text-xs text-[#4B4B4B]">
+                                    Tanggal Selesai Baru: {{ \Carbon\Carbon::parse($pesan->reschedule_request['tanggal_selesai'])->format('d M Y') }}
+                                </p>
+                            </div>
+                            <div class="flex gap-3">
+                                <form action="{{ route('pesananadmin.reschedule.approve', $pesan->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="bg-[#4CAF50] text-white rounded-lg px-6 py-2 italic font-semibold hover:bg-[#3B8B3B] transition">Setujui Reschedule</button>
+                                </form>
+                                <form action="{{ route('pesananadmin.reschedule.reject', $pesan->id) }}" method="POST" class="space-y-3">
+                                    @csrf
+                                    <button type="submit" class="bg-[#FF3B2F] text-white rounded-lg px-6 py-2 italic font-semibold hover:bg-[#D62E26] transition">Tolak Reschedule</button>
+                                    <input type="text" name="rejection_reason" placeholder="Alasan penolakan reschedule (opsional)" class="w-full rounded-lg bg-[#F5F7F8] border border-[#E6E6E6] p-3 text-xs text-[#4B4B4B]"/>
+                                </form>
+                            </div>
+                        </section>
+                    @endif
+
+                    <!-- Pembatalan Pesanan -->
+                    @if ($pesan->status == 'on_going')
+                        <section class="mt-4">
+                            <h4 class="italic font-semibold text-xs text-[#1E1E1E] mb-2">Pembatalan Pesanan</h4>
+                            <form action="{{ route('pesananadmin.verify', $pesan->id) }}" method="POST" class="space-y-3">
+                                @csrf
+                                <input type="hidden" name="action" value="cancel">
+                                <div>
+                                    <input 
+                                        type="text" 
+                                        name="cancellation_reason" 
+                                        placeholder="Alasan pembatalan (opsional)" 
+                                        class="w-full rounded-lg bg-[#F5F7F8] border border-[#E6E6E6] p-3 text-xs text-[#4B4B4B]" 
+                                        maxlength="255"
+                                    />
+                                    @error('cancellation_reason')
+                                        <span class="text-red-500 text-xs mt-1">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="flex gap-3">
+                                    <button 
+                                        type="submit" 
+                                        class="bg-[#FF3B2F] text-white rounded-lg px-6 py-2 italic font-semibold hover:bg-[#D62E26] transition"
+                                        onclick="return confirm('Yakin ingin membatalkan pesanan ini?')"
+                                    >
+                                        Batalkan Pesanan
+                                    </button>
+                                </div>
+                            </form>
+                        </section>
+                    @endif
 
                     <!-- Buttons -->
                     <section class="flex justify-between gap-3 mt-6 text-xs font-semibold">
@@ -338,7 +407,32 @@
                 }
             }
         });
+
+        // Konfirmasi untuk tombol verifikasi
+        document.querySelectorAll('form button[name="status"]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const action = button.value === 'approved' ? 'menyetujui' : 'menolak';
+                if (!confirm(`Apakah Anda yakin ingin ${action} pesanan ini?`)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Konfirmasi untuk tombol reschedule
+        document.querySelectorAll('form button:not([name="status"])').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const form = button.closest('form');
+                if (form.action.includes('reschedule/approve')) {
+                    if (!confirm('Apakah Anda yakin ingin menyetujui reschedule pesanan ini?')) {
+                        e.preventDefault();
+                    }
+                } else if (form.action.includes('reschedule/reject')) {
+                    if (!confirm('Apakah Anda yakin ingin menolak reschedule pesanan ini?')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
-```

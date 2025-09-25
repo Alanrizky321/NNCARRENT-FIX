@@ -23,7 +23,6 @@ use App\Http\Controllers\MobilController;
 |--------------------------------------------------------------------------
 | Public Routes
 |--------------------------------------------------------------------------
-| Rute yang dapat diakses tanpa autentikasi.
 */
 Route::get('/', function () {
     return view('welcome');
@@ -58,15 +57,12 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 |--------------------------------------------------------------------------
 | Admin Routes
 |--------------------------------------------------------------------------
-| Rute yang memerlukan autentikasi sebagai admin.
 */
 Route::prefix('admin')->group(function () {
-    // Login Admin
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [AuthController::class, 'adminLogin'])->name('admin.login.submit');
     Route::post('/logout', [AuthController::class, 'adminLogout'])->name('admin.logout');
 
-    // Rute Admin yang Dilindungi
     Route::middleware(['auth:admin'])->group(function () {
         Route::get('/dashboardadmin', [AdminDashboardController::class, 'index'])->name('dashboardadmin');
         Route::get('/pesanan', [PesananAdminController::class, 'index'])->name('pesananadmin');
@@ -76,12 +72,9 @@ Route::prefix('admin')->group(function () {
             ->name('pesananadmin.download');
         Route::get('/daftarmobil', [DaftarMobilAdminController::class, 'index'])->name('daftarmobiladmin');
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporanadmin');
-
-        // Aksi Reschedule
+        Route::post('/pesanan/{id}/cancel', [PesananAdminController::class, 'cancel'])->name('pesanan.cancel'); // Ganti YourController dengan nama controller Anda
         Route::post('/pesanan/{id}/reschedule/approve', [PesananAdminController::class, 'approveReschedule'])->name('pesananadmin.reschedule.approve');
         Route::post('/pesanan/{id}/reschedule/reject', [PesananAdminController::class, 'rejectReschedule'])->name('pesananadmin.reschedule.reject');
-
-        // Resource Admin
         Route::resource('admin', AdminController::class);
     });
 });
@@ -90,30 +83,22 @@ Route::prefix('admin')->group(function () {
 |--------------------------------------------------------------------------
 | Pelanggan Routes
 |--------------------------------------------------------------------------
-| Rute yang memerlukan autentikasi sebagai pelanggan.
 */
 Route::prefix('pelanggan')->group(function () {
-    // Login Pelanggan
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('pelanggan.login');
     Route::post('/login', [AuthController::class, 'pelangganLogin'])->name('pelanggan.login.submit');
     Route::post('/logout', [AuthController::class, 'pelangganLogout'])->name('pelanggan.logout');
 
-    // Rute Pelanggan yang Dilindungi
     Route::middleware(['auth:pelanggan'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
         Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan');
         Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
         Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
-
-        // Resource Pelanggan
         Route::resource('pelanggan', PelangganController::class);
-
-        // Booking
         Route::get('/detail-pemesanan', [BookingController::class, 'index'])->name('pelanggan.detailPemesanan');
         Route::get('/pesanan/{id}/reschedule', [RiwayatController::class, 'reschedule'])->name('pesanan.reschedule');
         Route::put('/pesanan/{id}/reschedule', [RiwayatController::class, 'updateReschedule'])->name('pesanan.updateReschedule');
-
         Route::get('/booking/{mobil_id}', [DatadiriController::class, 'showForm'])->name('booking.create');
         Route::post('/booking/store', [DatadiriController::class, 'store'])->name('booking.store');
         Route::get('/datadiri/{mobil_id}', [DatadiriController::class, 'showForm'])->name('datadiri.create');
@@ -126,7 +111,6 @@ Route::prefix('pelanggan')->group(function () {
 |--------------------------------------------------------------------------
 | General Protected Routes
 |--------------------------------------------------------------------------
-| Rute yang memerlukan autentikasi (baik admin maupun pelanggan).
 */
 Route::middleware(['auth'])->group(function () {
     Route::get('/booking/form', [PesanController::class, 'create'])->name('booking.form');
@@ -141,7 +125,6 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 | Resource Routes
 |--------------------------------------------------------------------------
-| Rute untuk resource seperti mobil, kategori, dan laporan.
 */
 Route::resource('mobil', MobilController::class);
 Route::post('/mobil/{id}/restore', [MobilController::class, 'restore'])->name('mobil.restore');

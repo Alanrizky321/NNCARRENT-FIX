@@ -261,12 +261,17 @@
                         </div>
                     </div>
                 </div>
-               <div class="price-action-container">
-    <p class="price">Rp {{ number_format($p->total_harga, 0, ',', '.') }}</p>
+                <div class="price-action-container">
+                    <p class="price">Rp {{ number_format($p->total_harga, 0, ',', '.') }}</p>
 
-    <!-- Tombol Reschedule -->
-    <a href="{{ route('pesanan.reschedule', $p->id) }}" class="btn">Reschedule</a>
-</div>
+                    <!-- Tombol Reschedule (hanya tampil jika status pending atau on_going) -->
+                    @if($p->status === 'pending' || $p->status === 'on_going')
+                        <a href="{{ route('pesanan.reschedule', $p->id) }}" class="btn">Reschedule</a>
+                    @else
+                        <span style="color: #666; font-style: italic;">Tidak dapat di-reschedule</span>
+                    @endif
+                </div>
+            </div>
         @endforeach
     @endif
 </div>

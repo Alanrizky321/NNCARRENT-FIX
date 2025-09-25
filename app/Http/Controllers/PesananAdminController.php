@@ -11,54 +11,91 @@ class PesananAdminController extends Controller
     public function index()
     {
         $pesans = Pesan::with('mobil')->get();
+        \Log::info('Pesanan:', $pesans->toArray()); // Debug ke log
         return view('pesananadmin', compact('pesans'));
     }
+
+   public function verify(Request $request, $id)
+{
+    $request->validate([
+        'action' => 'required|in:verify,cancel', // Membedakan aksi
+        'status' => 'required_if:action,verify|in:approved,rejected', // Wajib untuk verifikasi
+        'rejection_reason' => 'nullable|string|max:255', // Opsional untuk penolakan
+        'cancellation_reason' => 'nullable|string|max:255', // Opsional untuk pembatalan
+    ]);
+
+    $pesan = Pesan::findOrFail($id);
+
+    if ($request->input('action') === 'verify') {
+        // Logika verifikasi (status: pending)
+        if ($pesan->status !== 'pending') {
+            return redirect()->route('pesananadmin')->with('error', 'Pesanan tidak dalam status pending untuk diverifikasi.');
+        }
+
+        $status = $request->input('status') === 'approved' ? 'on_going' : 'canceled';
+        $pesan->update([
+            'status' => $status,
+            'verification_status' => $request->input('status'),
+            'rejection_reason' => $request->input('rejection_reason'),
+        ]);
+
+        Log::info('Pesanan diverifikasi', [
+            'pesan_id' => $pesan->id,
+            'status' => $pesan->status,
+            'verification_status' => $pesan->verification_status,
+        ]);
+    } elseif ($request->input('action') === 'cancel') {
+        // Logika pembatalan (status: on_going)
+        if ($pesan->status !== 'on_going') {
+            return redirect()->route('pesananadmin')->with('error', 'Pesanan tidak dalam status on_going untuk dibatalkan.');
+        }
+
+        $pesan->update([
+            'status' => 'canceled',
+            'cancellation_reason' => $request->input('cancellation_reason'),
+        ]);
+
+        Log::info('Pesanan dibatalkan', [
+            'pesan_id' => $pesan->id,
+            'status' => $pesan->status,
+            'cancellation_reason' => $pesan->cancellation_reason,
+        ]);
+    }
+
+    return redirect()->route('pesananadmin')->with('success', $request->input('action') === 'verify' ? 'Pesanan berhasil diverifikasi.' : 'Pesanan berhasil dibatalkan.');
+}
+
+    
 
     public function download($file)
     {
         $filePath = storage_path('app/public/' . $file);
-        if (!file_exists($filePath)) {
-            abort(404, 'File not found.');
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
         }
-        return response()->download($filePath);
+        return redirect()->back()->with('error', 'File tidak ditemukan.');
     }
 
-    public function verify(Request $request, $pesanId)
-    {
-        $request->validate([
-            'status' => 'required|in:approved,rejected',
-            'rejection_reason' => 'nullable|string|max:255',
-        ]);
-        $pesan = Pesan::findOrFail($pesanId);
-
-        if ($request->input('status') === 'approved') {
-            $pesan->verification_status = 'approved';
-            $pesan->status = 'on_going';
-            $pesan->rejection_reason = null;
-        } else {
-            $pesan->verification_status = 'rejected';
-            $pesan->status = 'canceled';
-            $pesan->rejection_reason = $request->input('rejection_reason');
-        }
-
-        $pesan->save();
-        return redirect()->route('pesananadmin')->with('success', 'Status verifikasi berhasil diperbarui.');
-    }
-
-    public function approveReschedule($id)
+    public function approveReschedule(Request $request, $id)
     {
         $pesan = Pesan::findOrFail($id);
-        if ($pesan->status !== 'pending') {
-            return redirect()->route('pesananadmin')->with('error', 'Pesanan tidak dalam status pending untuk reschedule.');
+        if (empty($pesan->reschedule_request)) {
+            return redirect()->route('pesananadmin')->with('error', 'Tidak ada permintaan reschedule untuk pesanan ini.');
         }
 
-        // Tidak perlu rollback tanggal, karena tanggal sudah diupdate di reschedule
         $pesan->update([
-            'status' => 'on_going',
+            'tanggal_mulai' => $pesan->reschedule_request['tanggal_mulai'],
+            'tanggal_selesai' => $pesan->reschedule_request['tanggal_selesai'],
+            'reschedule_request' => null,
         ]);
 
-        Log::info('Reschedule approved', ['pesan_id' => $pesan->id, 'status' => $pesan->status]);
-        return redirect()->route('pesananadmin')->with('success', 'Permintaan reschedule disetujui. Status pesanan kini on_going.');
+        Log::info('Reschedule disetujui', [
+            'pesan_id' => $pesan->id,
+            'tanggal_mulai' => $pesan->tanggal_mulai,
+            'tanggal_selesai' => $pesan->tanggal_selesai,
+        ]);
+
+        return redirect()->route('pesananadmin')->with('success', 'Reschedule pesanan berhasil disetujui.');
     }
 
     public function rejectReschedule(Request $request, $id)
@@ -68,22 +105,20 @@ class PesananAdminController extends Controller
         ]);
 
         $pesan = Pesan::findOrFail($id);
-        if ($pesan->status !== 'pending') {
-            return redirect()->route('pesananadmin')->with('error', 'Pesanan tidak dalam status pending untuk reschedule.');
+        if (empty($pesan->reschedule_request)) {
+            return redirect()->route('pesananadmin')->with('error', 'Tidak ada permintaan reschedule untuk pesanan ini.');
         }
 
-        // Kembali ke tanggal semula (simpan tanggal lama sebelum update)
-        $oldStart = $pesan->getOriginal('tanggal_mulai');
-        $oldEnd = $pesan->getOriginal('tanggal_selesai');
-
         $pesan->update([
-            'status' => 'on_going',
-            'tanggal_mulai' => $oldStart,
-            'tanggal_selesai' => $oldEnd,
+            'reschedule_request' => null,
             'rejection_reason' => $request->input('rejection_reason'),
         ]);
 
-        Log::info('Reschedule rejected', ['pesan_id' => $pesan->id, 'status' => $pesan->status, 'tanggal_mulai' => $pesan->tanggal_mulai, 'tanggal_selesai' => $pesan->tanggal_selesai]);
-        return redirect()->route('pesananadmin')->with('success', 'Permintaan reschedule ditolak. Tanggal dikembalikan ke semula.');
+        Log::info('Reschedule ditolak', [
+            'pesan_id' => $pesan->id,
+            'rejection_reason' => $request->input('rejection_reason'),
+        ]);
+
+        return redirect()->route('pesananadmin')->with('success', 'Reschedule pesanan berhasil ditolak.');
     }
 }

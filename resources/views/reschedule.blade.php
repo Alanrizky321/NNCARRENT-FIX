@@ -97,8 +97,8 @@
             </div>
         @endif
 
-        @if($pesanan->status === 'on_going')
-            <form action="{{ route('pesanan.updateReschedule', $pesanan->id) }}" method="POST">
+        @if($pesanan->status === 'pending' || $pesanan->status === 'on_going')
+            <form action="{{ route('pesanan.updateReschedule', $pesanan->id) }}" method="POST" id="rescheduleForm">
                 @csrf
                 @method('PUT')
 
@@ -136,7 +136,7 @@
             </form>
         @else
             <div class="alert">
-                Pesanan ini tidak dapat di-reschedule karena statusnya "{{ $pesanan->status }}" (harus "On Going").
+                Pesanan ini tidak dapat di-reschedule karena statusnya "{{ ucfirst($pesanan->status) }}" (harus "Pending" atau "On Going").
             </div>
         @endif
 
@@ -148,15 +148,34 @@
             const startDate = document.getElementById('tanggal_mulai').value;
             if (startDate) {
                 const minEndDate = new Date(startDate);
-                minEndDate.setDate(minEndDate.getDate() + 1); // Tambah 1 hari
+                minEndDate.setDate(minEndDate.getDate() + 1);
                 const minEndDateStr = minEndDate.toISOString().split('T')[0];
                 document.getElementById('tanggal_selesai').setAttribute('min', minEndDateStr);
             }
         }
 
-        // Panggil saat halaman dimuat untuk set nilai awal
+        // Set minimum start date to 2 days from today
         window.onload = function() {
+            const today = new Date();
+            today.setDate(today.getDate() + 2); // Add 2 days
+            const minStartDate = today.toISOString().split('T')[0];
+            document.getElementById('tanggal_mulai').setAttribute('min', minStartDate);
             updateMinEndDate();
+
+            // Store initial values
+            const initialStartDate = document.getElementById('tanggal_mulai').value;
+            const initialEndDate = document.getElementById('tanggal_selesai').value;
+
+            // Form submission validation
+            document.getElementById('rescheduleForm').addEventListener('submit', function(event) {
+                const currentStartDate = document.getElementById('tanggal_mulai').value;
+                const currentEndDate = document.getElementById('tanggal_selesai').value;
+
+                if (currentStartDate === initialStartDate && currentEndDate === initialEndDate) {
+                    event.preventDefault();
+                    alert('Silakan ubah tanggal mulai atau tanggal selesai untuk melakukan reschedule.');
+                }
+            });
         };
     </script>
 </body>

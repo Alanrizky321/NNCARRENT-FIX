@@ -38,54 +38,63 @@ class RiwayatController extends Controller
     }
 
     public function updateReschedule(Request $request, $id)
-    {
-        $pesan = Pesan::findOrFail($id);
+{
+    $pesan = Pesan::findOrFail($id);
 
-        if ($pesan->status !== 'on_going') {
-            return redirect()->route('riwayat')->with('error', 'Pesanan belum on_going, tidak bisa di-reschedule.');
-        }
-
-        $request->validate([
-            'tanggal_mulai' => 'required|date|after_or_equal:today',
-            'tanggal_selesai' => [
-                'required',
-                'date',
-                function ($attribute, $value, $fail) use ($request) {
-                    $startDate = strtotime($request->tanggal_mulai);
-                    $endDate = strtotime($value);
-                    $diff = ($endDate - $startDate) / (60 * 60 * 24);
-                    if ($diff < 1) {
-                        $fail('Tanggal selesai harus minimal 1 hari setelah tanggal mulai.');
-                    }
-                },
-            ],
-        ]);
-
-        $bentrok = Pesan::where('mobil_id', $pesan->mobil_id)
-            ->where('status', '!=', 'canceled')
-            ->where(function ($query) use ($request) {
-                $query->whereBetween('tanggal_mulai', [$request->tanggal_mulai, $request->tanggal_selesai])
-                      ->orWhereBetween('tanggal_selesai', [$request->tanggal_mulai, $request->tanggal_selesai])
-                      ->orWhere(function ($q) use ($request) {
-                          $q->where('tanggal_mulai', '<=', $request->tanggal_mulai)
-                            ->where('tanggal_selesai', '>=', $request->tanggal_selesai);
-                      });
-            })
-            ->where('id', '!=', $pesan->id)
-            ->exists();
-
-        if ($bentrok) {
-            return redirect()->back()->with('error', 'Tanggal baru tidak tersedia untuk mobil ini.');
-        }
-
-        $pesan->update([
-            'tanggal_mulai' => $request->tanggal_mulai,
-            'tanggal_selesai' => $request->tanggal_selesai,
-            'status' => 'pending', // Ubah status menjadi pending setelah reschedule
-        ]);
-
-        Log::info('Reschedule submitted', ['pesan_id' => $id, 'status' => $pesan->status, 'tanggal_mulai' => $pesan->tanggal_mulai, 'tanggal_selesai' => $pesan->tanggal_selesai]);
-
-        return redirect()->route('riwayat')->with('success', 'Permintaan reschedule telah dikirim dan menunggu persetujuan admin. Status pesanan kini pending.');
+    // Cek apakah status bukan canceled
+    if ($pesan->status === 'canceled') {
+        return redirect()->route('riwayat')->with('error', 'Pesanan sudah dibatalkan, tidak bisa di-reschedule.');
     }
+
+    // Validasi input
+    $request->validate([
+        'tanggal_mulai' => 'required|date|after_or_equal:today',
+        'tanggal_selesai' => [
+            'required',
+            'date',
+            function ($attribute, $value, $fail) use ($request) {
+                $startDate = strtotime($request->tanggal_mulai);
+                $endDate = strtotime($value);
+                $diff = ($endDate - $startDate) / (60 * 60 * 24);
+                if ($diff < 1) {
+                    $fail('Tanggal selesai harus minimal 1 hari setelah tanggal mulai.');
+                }
+            },
+        ],
+    ]);
+
+    // Cek bentrokan jadwal
+    $bentrok = Pesan::where('mobil_id', $pesan->mobil_id)
+        ->where('status', '!=', 'canceled')
+        ->where(function ($query) use ($request) {
+            $query->whereBetween('tanggal_mulai', [$request->tanggal_mulai, $request->tanggal_selesai])
+                  ->orWhereBetween('tanggal_selesai', [$request->tanggal_mulai, $request->tanggal_selesai])
+                  ->orWhere(function ($q) use ($request) {
+                      $q->where('tanggal_mulai', '<=', $request->tanggal_mulai)
+                        ->where('tanggal_selesai', '>=', $request->tanggal_selesai);
+                  });
+        })
+        ->where('id', '!=', $pesan->id)
+        ->exists();
+
+    if ($bentrok) {
+        return redirect()->back()->with('error', 'Maaf untuk tanggal pilihan saat ini unit sudah tidak tersedia.');
+    }
+
+    // Update data pesanan
+    $pesan->update([
+        'tanggal_mulai' => $request->tanggal_mulai,
+        'tanggal_selesai' => $request->tanggal_selesai,
+        'status' => 'pending', // Ubah status menjadi pending setelah reschedule
+    ]);
+
+    Log::info('Reschedule submitted', [
+        'pesan_id' => $id,
+        'status' => $pesan->status,
+        'tanggal_mulai' => $pesan->tanggal_mulai,
+        'tanggal_selesai' => $pesan->tanggal_selesai
+    ]);
+
+    return redirect()->route('riwayat')->with('success', 'Permintaan reschedule telah dikirim dan menunggu persetujuan admin. Status pesanan kini pending.');
+}
 }
