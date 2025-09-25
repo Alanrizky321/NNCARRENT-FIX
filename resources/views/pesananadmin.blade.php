@@ -104,7 +104,11 @@
                                     <td class="py-3 pr-4">{{ \Carbon\Carbon::parse($pesan->tanggal_mulai)->format('d M Y') }}</td>
                                     <td class="py-3 pr-4">{{ \Carbon\Carbon::parse($pesan->tanggal_selesai)->format('d M Y') }}</td>
                                     <td class="py-3 pr-4">
-                                        RP {{ number_format($pesan->total_harga, 0, ',', '.') }}
+                                         Rp {{ number_format(
+                                                $pesan->mobil->Harga_Sewa *
+                                                (strtotime($pesan->tanggal_selesai) - strtotime($pesan->tanggal_mulai)) / (60 * 60 * 24),
+                                                0, ',', '.'
+                                            ) }}
                                     </td>
                                     <td class="py-3 pr-4">
                                         @if ($pesan->ktp_photo_path)

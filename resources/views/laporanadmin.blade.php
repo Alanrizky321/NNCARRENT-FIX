@@ -77,29 +77,7 @@
     </header>
 
     <!-- Filter and New Report -->
-    <section class="flex flex-wrap items-center bg-white rounded-lg p-4 border border-gray-200 mb-8 max-w-4xl gap-4">
-      <label for="filter-date" class="font-semibold italic text-sm text-gray-700 whitespace-nowrap mr-4">
-        Filter:
-      </label>
-      <input
-        id="filter-date"
-        type="text"
-        value="01/05/2025 - 15/05/2025"
-        class="border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-600 w-full sm:w-[180px] focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
-      />
-      <select
-        aria-label="Jenis laporan"
-        class="border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-600 w-full sm:w-[140px] focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
-      >
-        <option>Jenis: Mingguan</option>
-      </select>
-     <a href="{{ route('laporan.baru') }}"
-   class="bg-green-600 text-white text-sm font-semibold italic rounded-md px-4 py-2 hover:bg-green-700 transition-colors whitespace-nowrap inline-block text-center">
-   Buat Laporan Baru
-</a>
-
-
-    </section>
+    
 
     <!-- Reports Table -->
     <section class="overflow-x-auto rounded-lg bg-white border border-gray-200 max-w-7xl">

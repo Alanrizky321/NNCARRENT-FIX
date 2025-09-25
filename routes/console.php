@@ -16,17 +16,17 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // *** Scope untuk cek tanggal kadaluarsa pemesanan ***
+// Schedule::call(function () {
+//     DB::table('pesans')
+//         ->where('tanggal_selesai', '<', now())
+//         ->where('status', 'on_going')
+//         ->update(['status' => 'finished']);
+// })->everySecond();
 Schedule::call(function () {
     DB::table('pesans')
-        ->where('tanggal_selesai', '<', now())
+        ->where('tanggal_selesai', '>=', now())
         ->where('status', 'on_going')
         ->update(['status' => 'finished']);
-})->everySecond();
-Schedule::call(function () {
-    DB::table('pesans')
-        ->where('tanggal_selesai', '>', now())
-        ->where('status', 'finished')
-        ->update(['status' => 'on_going']);
 })->everySecond();
 Schedule::call(function () {
     $pesanans = Pesan::where('status', 'finished')->where('tanggal_selesai', '<=', Carbon::now()->subWeek())->get();
