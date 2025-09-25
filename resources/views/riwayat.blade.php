@@ -262,7 +262,13 @@
                     </div>
                 </div>
                 <div class="price-action-container">
-                    <p class="price">Rp {{ number_format($p->total_harga, 0, ',', '.') }}</p>
+<p class="price">
+  Rp {{ number_format(
+      $p->mobil->Harga_Sewa *
+      (strtotime($p->tanggal_selesai) - strtotime($p->tanggal_mulai)) / (60 * 60 * 24),
+      0, ',', '.'
+  ) }}
+</p>
 
                     <!-- Tombol Reschedule (hanya tampil jika status pending atau on_going) -->
                     @if($p->status === 'pending' || $p->status === 'on_going')

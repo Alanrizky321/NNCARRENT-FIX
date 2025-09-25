@@ -241,9 +241,7 @@
                                         @if($pesan->antar_jemput == 'antar-jemput')
                                             <p>Biaya Antar Jemput: RP {{ number_format(50000, 0, ',', '.') }}</p>
                                         @endif
-                                        <p class="font-bold text-sm text-[#1E1E1E]">Total: RP {{ number_format($pesan->total_harga, 0, ',', '.') }}</p>
-                                    @else
-                                        <p>-</p>
+                                       
                                     @endif
                                     <p class="text-xs text-[#7B7B7B]">
                                         Status: {{ $pesan->bukti_pembayaran_path ? 'Sudah dibayar' : 'Belum dibayar' }}

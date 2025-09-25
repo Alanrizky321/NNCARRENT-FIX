@@ -111,7 +111,7 @@
                 <!-- Harga -->
                 <div class="form-group">
                     <label>Total Harga</label>
-                    <input type="text" value="Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}" readonly>
+                    <input type="text" value="Rp{{ number_format($pesanan->mobil->Harga_Sewa * (strtotime($pesanan->tanggal_selesai) - strtotime($pesanan->tanggal_mulai)) / (60 * 60 * 24), 0, ',', '.') }}" readonly>
                 </div>
 
                 <!-- Status -->

@@ -90,11 +90,8 @@
     Merupakan Perusahaan Jasa Sewa Mobil, Tour and Travel di Banyuwangi yang telah berdiri resmi di bawah naungan PT. NNFamily Trans Banyuwangi.
    </p>
    <p class="mb-10 text-sm leading-relaxed max-w-4xl mx-auto">
-    Dengan semangat dan komitmen yang tinggi untuk mengutamakan kepuasan konsumen di bidang jasa sewa mobil, tour and travel. Perusahaan kami melayani jasa sewa mobil plus Driver Di samping itu, kami juga memberikan berbagai jenis layanan transportasi lainnya. Mulai dari Sewa mobil untuk keperluan pribadi mau pun kedinasan, travel antar kota antar propinsi hingga trip wisata
-   </p>
-   <p class="mb-10 text-sm leading-relaxed max-w-4xl mx-auto">
-    Dengan pengalaman lebih dari 5 tahun di bidang jasa sewa mobil, tour and travel tentu kami bisa menjadi partner terbaik untuk perjalanan Anda. Perusahaan ini dalam setiap layanannya selalu mengutamakan kepuasan konsumen. Oleh sebab itu, kami selalu menyediakan armada terbaru yang bersih dan terawat. Driver yang tersedia di Perusahaan Kami juga merupakan Driver yang ramah, professional dan berpengalamana.
-   </p>
+    Dengan semangat dan komitmen yang tinggi untuk mengutamakan kepuasan konsumen di bidang jasa sewa mobil lepas kunci untuk membantu pengalamamn anda menikmati kawasan eksotis di Banyuwangi.
+    Dengan pengalaman lebih dari 5 tahun di bidang jasa sewa mobil, tour and travel tentu kami bisa menjadi partner terbaik untuk perjalanan Anda. Perusahaan ini dalam setiap layanannya selalu mengutamakan kepuasan konsumen. Oleh sebab itu, kami selalu menyediakan armada terbaru yang bersih dan terawat.
   </main>
  </body>
 </html>
