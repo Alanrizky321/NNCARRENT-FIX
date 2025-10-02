@@ -18,21 +18,16 @@ use App\Http\Controllers\PesananAdminController;
 use App\Http\Controllers\DaftarMobilAdminController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MobilController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
 | Public Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
-Route::get('/tentangkami', function () {
-    return view('tentangkami');
-})->name('tentangkami');
-
-Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/tentangkami', [HomeController::class, 'tentangkami'])->name('tentangkami');
+Route::get('/kategori', [HomeController::class, 'kategori'])->name('kategori');
 
 Route::get('/wisata', function () {
     return view('wisata');

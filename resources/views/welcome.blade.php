@@ -2,173 +2,677 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>NNCarRent</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet" />
-    <style>
-        body {
-            font-family: "Inter", sans-serif;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>NNCARRENT - Rental Mobil Terpercaya</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
 </head>
 
-<body class="bg-white text-black">
-    <!-- Navbar -->
-    <nav class="bg-[#2a2727] flex items-center justify-between px-6 py-4">
-        <div class="text-[#ff2a2a] font-extrabold text-xl select-none">
-            NNCARRENT
-        </div>
-        <ul class="flex space-x-6 text-white text-sm font-normal">
-            <li class="cursor-pointer text-[#b96a6a] hover:underline">
-                <a href="#">Beranda</a>
-            </li>
-            <li class="cursor-pointer hover:underline">
-                <a href="{{ route('tentangkami') }}">Tentang Kami</a>
-            </li>
-            <li>
-                <a href="{{ route('kategori') }}" class="cursor-pointer hover:underline">Daftar Mobil</a>
-            </li>
-        </ul>
+<body class="bg-white text-gray-800">
 
-           </ul>
-<div class="flex space-x-2 items-center">
-  @if (!Auth::guard('admin')->check() && !Auth::guard('pelanggan')->check())
-    <!-- Jika belum login, tampilkan tombol Register dan Login -->
-    <a href="{{ route('register') }}" class="bg-gray-600 text-white text-xs px-3 py-1 rounded-md hover:bg-gray-700 transition-colors duration-300">
-      Register
-    </a>
-    <a href="{{ route('login') }}" class="bg-[#f44343] text-white text-xs px-4 py-1 rounded-md hover:bg-[#e03e3e] transition-colors duration-300">
-      Login
-    </a>
-  @else
-    <!-- Debug untuk memastikan guard aktif -->
+  <!-- Navbar -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
-    <!-- Jika sudah login, tampilkan email dan tombol Logout -->
-    <span class="text-white text-xs truncate max-w-[150px]">
-      @php
-          $user = null;
-          if (Auth::guard('admin')->check()) {
-              $user = Auth::guard('admin')->user();
-          } elseif (Auth::guard('pelanggan')->check()) {
-              $user = Auth::guard('pelanggan')->user();
-          }
-          echo $user ? ($user->email ?? 'Email Tidak Ditemukan') : 'Pengguna Tidak Ditemukan';
-      @endphp
-    </span>
-    <form action="{{ route('admin.logout') }}" method="POST">
-    @csrf
-    <button type="submit" class="flex items-center space-x-3 hover:text-red-500 transition-colors duration-200 text-left">
-        <i class="fas fa-sign-out-alt text-lg"></i>
-        <span>Logout</span>
-    </button>
-</form>
+  <nav class="bg-gray-900 shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="font-extrabold text-2xl text-red-500 select-none">
+        NNCARRENT
+      </div>
+      <ul class="hidden md:flex space-x-8 text-sm font-medium">
+        <li><a href="{{ route('home') }}" class="text-red-500 hover:text-red-400 transition-colors">Beranda</a></li>
+        <li><a href="{{ route('tentangkami') }}" class="text-gray-300 hover:text-red-500 transition-colors">Tentang Kami</a></li>
+        <li><a href="{{ route('kategori') }}" class="text-gray-300 hover:text-red-500 transition-colors">Daftar Mobil</a></li>
+      </ul>
 
-  @endif
-</div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="max-w-[900px] mx-auto px-6 text-center mt-12">
-        <h1 class="font-semibold text-lg md:text-xl leading-tight">
-            Nikmati Perjalanan Anda
-            <br />
-            dengan NNCARRENT HARI INI!
-        </h1>
-        <p class="text-[10px] md:text-xs text-black-300 mt-3 max-w-[600px] mx-auto leading-tight">
-            Temukan kebebasan di jalan terbuka dengan beragam armada mobil sewaan kami.
-            Apakah Anda membutuhkan mobil kompak untuk berkendara di dalam kota atau SUV
-            yang luas untuk perjalanan keluarga, kami memiliki kendaraan yang tepat untuk Anda.
-        </p>
-        <button class="bg-[#f44343] text-white text-xs px-4 py-1 rounded mt-6 hover:bg-[#e03e3e] transition-colors duration-300">
-            <a href="{{ route('kategori') }}">Pesan sekarang</a>
+      <!-- User Menu with Alpine.js -->
+      <div class="flex items-center space-x-3 relative" x-data="{ open: false }">
+        @if (!Auth::guard('admin')->check() && !Auth::guard('pelanggan')->check())
+        <!-- Jika belum login, tampilkan tombol Register dan Login -->
+        <a href="{{ route('register') }}" class="bg-gray-700 hover:bg-gray-600 text-white text-sm px-4 py-2 rounded-lg transition-colors font-medium">
+          Register
+        </a>
+        <a href="{{ route('login') }}" class="bg-red-500 hover:bg-red-600 text-white text-sm px-5 py-2 rounded-lg transition-colors font-medium shadow-md">
+          Login
+        </a>
+        @else
+        <!-- Jika sudah login, tampilkan email dan tombol Logout -->
+        <button @click="open = !open" class="flex items-center space-x-3 bg-red-500 hover:bg-red-600 transition-colors rounded-lg px-4 py-2 focus:outline-none">
+          <i class="fas fa-user-circle text-white text-xl"></i>
+          <span class="text-white text-sm font-medium hidden md:inline">
+            @php
+            $user = null;
+            if (Auth::guard('admin')->check()) {
+            $user = Auth::guard('admin')->user();
+            } elseif (Auth::guard('pelanggan')->check()) {
+            $user = Auth::guard('pelanggan')->user();
+            }
+            echo $user ? ($user->email ?? 'Email Tidak Ditemukan') : 'Pengguna Tidak Ditemukan';
+            @endphp
+          </span>
         </button>
-        <img alt="Line of black cars parked under airport terminal roof with lights on" class="mt-8 rounded-md w-full object-cover" height="300" src="https://storage.googleapis.com/a1aa/image/12546588-d059-45db-d363-c55f4aceba90.jpg" width="900" />
-    </section>
 
-    <!-- Section 2 -->
-    <section class="bg-[#7a7575] mt-16 py-10 px-6 max-w-[1200px] mx-auto flex flex-col md:flex-row items-center md:items-start gap-6">
-        <div class="text-white max-w-[480px] md:max-w-[600px]">
-            <h2 class="font-normal text-base md:text-lg leading-snug mb-3">
-                Temukan Pengalaman Sewa Mobil Terbaik
-                <br />
-                dengan NNCARRENT Hari Ini!
-            </h2>
-            <p class="text-[9px] md:text-xs text-gray-200 leading-tight">
-                Di NNCARRENT, kami menawarkan beragam pilihan kendaraan yang sesuai dengan
-                setiap kebutuhan. Nikmati harga yang kompetitif dan layanan pelanggan yang
-                tak tertandingi yang memastikan pengalaman sewa yang mulus
-            </p>
+        <!-- Dropdown Menu -->
+        <div x-show="open"
+          @click.away="open = false"
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0 transform scale-95"
+          x-transition:enter-end="opacity-100 transform scale-100"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100 transform scale-100"
+          x-transition:leave-end="opacity-0 transform scale-95"
+          class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl z-50 overflow-hidden"
+          style="display: none;">
+          @if (Auth::guard('pelanggan')->check())
+          <a href="{{ route('riwayat') }}"
+            class="flex items-center space-x-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+            <i class="fas fa-clipboard-list text-gray-400"></i>
+            <span>Detail Pemesanan</span>
+          </a>
+          @endif
+          <div class="border-t border-gray-100"></div>
+          <form action="{{ route('pelanggan.logout') }}" method="POST" @if (Auth::guard('admin')->check()) action="{{ route('admin.logout') }}" @endif>
+            @csrf
+            <button type="submit"
+              class="w-full flex items-center space-x-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </button>
+          </form>
         </div>
-        <img alt="White Toyota Alphard parked on street in daylight with trees and buildings in background" class="rounded-md w-full max-w-[320px] object-cover" height="200" src="https://storage.googleapis.com/a1aa/image/f92d4cb3-aa15-4eb7-1a3b-c8b14b160c32.jpg" width="320" />
-    </section>
+        @endif
+      </div>
+    </div>
+  </nav>
 
-    <!-- Section 3 -->
-    <section class="max-w-[1200px] mx-auto px-6 mt-16">
-        <h3 class="text-center font-semibold text-base md:text-lg mb-8">
-            Pilihan Mobil terlaris
-        </h3>
-        <div class="relative">
-            <div class="flex space-x-6 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory">
-                <!-- Card 1 -->
-                <div class="bg-white text-black rounded-md shadow-md min-w-[280px] snap-center flex-shrink-0 p-4 border border-gray-200">
-                    <img alt="White Toyota Alphard side view car image" class="w-[120px] h-[60px] object-contain mb-3" height="60" src="https://storage.googleapis.com/a1aa/image/f03ee803-2ac7-4174-16bb-f39db0b0cd10.jpg" width="120" />
-                    <h4 class="font-bold text-xs mb-1">
-                        Toyota Alpard
-                    </h4>
-                    <div class="flex items-center text-yellow-400 text-xs mb-1">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <i class="far fa-star"></i>
-                        <span class="text-gray-500 ml-1">
-                            (20 Review)
-                        </span>
-                    </div>
-                    <div class="text-xs font-semibold text-[#f44343] mb-1">
-                        RP 300.000
-                        <span class="font-normal text-gray-700">/hari</span>
-                    </div>
-                    <div class="flex items-center text-gray-600 text-[9px] space-x-3 mb-1">
-                        <div class="flex items-center space-x-1">
-                            <i class="fas fa-user"></i>
-                            <span>6</span>
-                        </div>
-                        <div>MPV</div>
-                    </div>
-                    <div class="text-[9px] text-gray-600">Automatic</div>
+  <!-- Hero Section -->
+  <section class="relative bg-cover bg-center" style="background-image: url('https://storage.googleapis.com/a1aa/image/12546588-d059-45db-d363-c55f4aceba90.jpg'); height: 500px;">
+    <div class="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
+    <div class="relative h-full flex flex-col justify-center px-6 md:px-12 max-w-7xl mx-auto text-white">
+      <h1 class="font-bold text-4xl md:text-5xl max-w-2xl leading-tight mb-6">
+        Nikmati Perjalanan Anda<br />
+        dengan <span class="text-red-500">NNCARRENT</span> Hari Ini!
+      </h1>
+      <p class="max-w-xl text-base leading-relaxed mb-8 text-gray-200">
+        Temukan kebebasan di jalan terbuka dengan beragam armada mobil sewaan kami.
+        Apakah Anda membutuhkan mobil kompak untuk berkendara di dalam kota atau SUV yang luas untuk perjalanan keluarga, kami memiliki kendaraan yang tepat untuk Anda.
+      </p>
+      <a href="{{ route('kategori') }}" class="inline-flex items-center space-x-2 bg-red-500 hover:bg-red-600 transition-all duration-300 rounded-lg px-8 py-3 text-sm font-semibold shadow-lg hover:shadow-xl w-fit">
+        <span>Pesan Sekarang</span>
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- Popular Cars Section -->
+  <section class="max-w-7xl mx-auto px-6 py-12">
+    <div class="text-center mb-12">
+      <h2 class="font-bold text-3xl mb-3 text-gray-900">Mobil Populer</h2>
+      <p class="text-gray-600">Temukan mobil terbaik untuk perjalanan Anda</p>
+    </div>
+
+    <div class="relative">
+      <button id="prevCar" aria-label="Previous car" class="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-red-500 hover:text-white rounded-full p-3 z-20 transition-all shadow-lg">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div id="carSlider" class="flex space-x-6 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory pb-4">
+        @foreach ($mobils->take(6) as $mobil)
+        <article class="min-w-[300px] snap-center flex-shrink-0 group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+          <!-- Car Image -->
+          <div class="bg-gray-50 p-4 h-40 flex items-center justify-center overflow-hidden">
+            <img src="{{ asset($mobil->Foto) }}"
+              alt="{{ $mobil->Merek }} {{ $mobil->Model }}"
+              class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+          </div>
+
+          <!-- Car Details -->
+          <div class="p-4">
+            <!-- Title -->
+            <h3 class="font-bold text-lg text-gray-900 mb-1">
+              {{ $mobil->Merek }} <span class="font-extrabold">{{ $mobil->Model }}</span>
+            </h3>
+            <p class="text-sm text-gray-500 mb-2">({{ $mobil->Tahun }})</p>
+
+            <!-- Price -->
+            <div class="mb-3 pb-3 border-b border-gray-100">
+              <p class="text-sm text-gray-600 mb-1">Harga Sewa</p>
+              <p class="text-xl font-bold text-red-500">
+                Rp {{ number_format($mobil->Harga_Sewa, 0, ',', '.') }}
+                <span class="text-sm font-normal text-gray-600">/hari</span>
+              </p>
+            </div>
+
+            <!-- Specifications -->
+            <div class="space-y-2 mb-3">
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center space-x-1 text-gray-600">
+                  <i class="fas fa-users w-4"></i>
+                  <span>{{ $mobil->Jumlah_Kursi }} Kursi</span>
                 </div>
-                <!-- More Cards -->
+                <div class="flex items-center space-x-1 text-gray-600">
+                  <i class="fas fa-cog w-4"></i>
+                  <span>{{ $mobil->Jenis_Transmisi }}</span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-1 text-sm">
+                <i class="fas fa-tag text-gray-600 w-4"></i>
+                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
+                  {{ $mobil->kategori->Nama_Kategori ?? 'Kategori tidak tersedia' }}
+                </span>
+              </div>
+              <div class="flex items-center space-x-1 text-sm">
+                @if($mobil->Status_Ketersediaan)
+                <i class="fas fa-check-circle text-green-500"></i>
+                <span class="text-green-600 font-medium">Tersedia</span>
+                @else
+                <i class="fas fa-times-circle text-red-500"></i>
+                <span class="text-red-600 font-medium">Tidak Tersedia</span>
+                @endif
+              </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-10">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-4 gap-8 text-xs sm:text-sm">
-            <div class="flex flex-col space-y-4">
-                <a class="hover:underline" href="#">Beranda</a>
-                <a class="hover:underline" href="#">Tentang Kami</a>
-                <a class="hover:underline" href="#">Kontak</a>
+            <!-- Action Button -->
+            <a href="{{ route('detail', ['id' => $mobil->ID_Mobil]) }}"
+              class="block w-full bg-red-500 hover:bg-red-600 text-white text-center py-2 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg text-sm">
+              Pesan Sekarang
+            </a>
+          </div>
+        </article>
+        @endforeach
+      </div>
+
+      <button id="nextCar" aria-label="Next car" class="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-red-500 hover:text-white rounded-full p-3 z-20 transition-all shadow-lg">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- Informasi Wisata -->
+  <section class="bg-gradient-to-br from-gray-900 to-gray-800 mt-24 py-16 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="font-bold text-3xl text-white mb-3">Informasi Wisata di Banyuwangi</h2>
+        <p class="text-gray-300">Jelajahi destinasi wisata terbaik dengan kendaraan pilihan Anda</p>
+      </div>
+
+      <div class="relative">
+        <button id="prevTour" aria-label="Previous tour" class="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-red-500 hover:text-white rounded-full p-3 z-20 transition-all shadow-lg">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div id="tourSlider" class="flex space-x-6 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory pb-4">
+          <!-- Card 1 -->
+          <div class="min-w-[320px] snap-center flex-shrink-0 group">
+            <div class="relative overflow-hidden rounded-xl shadow-lg">
+              <img src="ijen.jpg" alt="Kawah Ijen" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+              <div class="absolute bottom-0 left-0 right-0 p-6">
+                <h3 class="text-white font-bold text-xl mb-2">Kawah Ijen</h3>
+                <p class="text-gray-200 text-sm">Fenomena api biru yang memukau</p>
+              </div>
             </div>
-            <div class="flex flex-col space-y-2 max-w-[150px]">
-                <span class="font-semibold">Produk kami</span>
-                <a class="hover:underline" href="#">Mobil</a>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="min-w-[320px] snap-center flex-shrink-0 group">
+            <div class="relative overflow-hidden rounded-xl shadow-lg">
+              <img src="pm.jpg" alt="Pantai Pulau Merah" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+              <div class="absolute bottom-0 left-0 right-0 p-6">
+                <h3 class="text-white font-bold text-xl mb-2">Pantai Pulau Merah</h3>
+                <p class="text-gray-200 text-sm">Surga peselancar dengan pemandangan eksotis</p>
+              </div>
             </div>
-            <div class="flex flex-col items-center space-y-2">
-                <span>ikuti medsos kami</span>
-                <a aria-label="Instagram" class="hover:text-[#f44343]" href="#">
-                    <i class="fab fa-instagram text-lg"></i>
-                </a>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="min-w-[320px] snap-center flex-shrink-0 group">
+            <div class="relative overflow-hidden rounded-xl shadow-lg">
+              <img src="purwo.jpg" alt="Alas Purwo" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+              <div class="absolute bottom-0 left-0 right-0 p-6">
+                <h3 class="text-white font-bold text-xl mb-2">Alas Purwo</h3>
+                <p class="text-gray-200 text-sm">Hutan lindung dengan keanekaragaman hayati</p>
+              </div>
             </div>
-            <div class="flex items-center">
-                <img src="web.jpg" alt="Logo" class="logo" height="40" width="120" />
-            </div>
+          </div>
         </div>
-    </footer>
+
+        <button id="nextTour" aria-label="Next tour" class="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-red-500 hover:text-white rounded-full p-3 z-20 transition-all shadow-lg">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="text-center mt-12">
+        <a href="{{ route('wisata') }}" class="inline-flex items-center space-x-2 bg-red-500 hover:bg-red-600 transition-all duration-300 rounded-lg px-8 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl">
+          <span>Lihat Selengkapnya</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+  <!-- Rating & Ulasan -->
+<section id="rating-ulasan" class="max-w-7xl mx-auto mt-24 px-6">
+  <!-- Header + Ringkasan -->
+  <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-lg">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div>
+        <h2 class="font-bold text-3xl text-gray-900">Rating & Ulasan</h2>
+        <p class="text-gray-600 mt-1">
+          Berdasarkan <span id="totalReviewsText" class="font-semibold text-red-500">2.143</span> ulasan
+        </p>
+      </div>
+
+      <!-- Ringkasan skor -->
+      <div class="flex items-center gap-6 bg-gray-50 p-4 rounded-lg shadow-inner">
+        <div id="avgScore" class="text-5xl font-extrabold text-red-600">4.8</div>
+        <div>
+          <div id="avgStars" class="flex items-center gap-1 text-yellow-500 text-xl" aria-label="Skor rata-rata">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+          </div>
+          <p class="text-sm text-gray-500 mt-1">Skor rata-rata</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM: tepat di bawah ringkasan -->
+    <div class="mt-8">
+      <div class="rounded-2xl border border-gray-100 p-6 bg-gradient-to-br from-white to-gray-50 shadow-md">
+        <h3 class="font-semibold text-xl text-gray-900 mb-4">Tulis Ulasan Anda</h3>
+        <p class="text-sm text-gray-600 mb-6">Bagikan pengalaman Anda untuk membantu pengguna lain.</p>
+
+        <!-- Rating Picker -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Pemberian Rating</label>
+          <div id="starPicker" class="flex items-center gap-1" data-value="0" aria-label="Pilih rating 1–5">
+            <i class="fas fa-star text-gray-300 cursor-pointer hover:text-yellow-500 transition-colors"></i>
+            <i class="fas fa-star text-gray-300 cursor-pointer hover:text-yellow-500 transition-colors"></i>
+            <i class="fas fa-star text-gray-300 cursor-pointer hover:text-yellow-500 transition-colors"></i>
+            <i class="fas fa-star text-gray-300 cursor-pointer hover:text-yellow-500 transition-colors"></i>
+            <i class="fas fa-star text-gray-300 cursor-pointer hover:text-yellow-500 transition-colors"></i>
+          </div>
+        </div>
+
+        <!-- Fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Nama</label>
+            <input id="rvName" type="text" class="w-full rounded-lg border-gray-200 focus:ring-2 focus:ring-red-500 focus:border-red-500 p-3 bg-white shadow-sm placeholder-gray-400" placeholder="Nama lengkap">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Lampirkan Foto (Opsional)</label>
+            <label class="flex items-center gap-2 w-full rounded-lg border border-gray-200 bg-white p-3 cursor-pointer hover:bg-gray-50 transition-colors">
+              <i class="fas fa-upload text-gray-500"></i>
+              <span class="text-sm text-gray-600" id="rvFileLabel">Pilih file…</span>
+              <input id="rvFile" type="file" class="hidden" accept="image/*">
+            </label>
+          </div>
+        </div>
+
+        <!-- Ulasan Textarea -->
+        <div class="mt-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Ulasan Anda</label>
+          <textarea id="rvText" rows="4" maxlength="500" class="w-full rounded-lg border-gray-200 focus:ring-2 focus:ring-red-500 focus:border-red-500 p-3 bg-white shadow-sm resize-none placeholder-gray-400" placeholder="Tulis ulasan Anda di sini…"></textarea>
+          <div class="mt-2 flex items-center justify-between text-sm text-gray-500">
+            <span id="rvCount">0</span>/500 karakter
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-6 text-right">
+          <button id="rvSubmit" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold text-sm px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all">
+            Kirim Ulasan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  <!-- Apa Kata Mereka — horizontal scroll + panah, TANPA JS -->
+  <div class="mt-12 max-w-7xl mx-auto relative">
+    <!-- Heading -->
+    <div class="text-center mb-12">
+      <h3 class="font-bold text-3xl text-gray-900 mb-3">Apa Kata Mereka</h3>
+      <p class="text-gray-600 text-sm">Ulasan terbaru dari pelanggan kami</p>
+      <div class="h-1 w-16 bg-red-500 mx-auto rounded-full mt-4"></div>
+    </div>
+
+    <!-- Panah (menggunakan button untuk scroll horizontal) -->
+    <button class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -ml-2 z-20 bg-white hover:bg-red-500 hover:text-white rounded-full p-3 shadow-lg transition-colors"
+      aria-label="Sebelumnya" onclick="document.getElementById('reviewsTrack').scrollLeft -= 540">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 -mr-2 z-20 bg-white hover:bg-red-500 hover:text-white rounded-full p-3 shadow-lg transition-colors"
+      aria-label="Berikutnya" onclick="document.getElementById('reviewsTrack').scrollLeft += 540">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <!-- TRACK horizontal -->
+    <div id="reviewsTrack"
+      class="mt-6 grid grid-flow-col auto-cols-[minmax(540px,1fr)] overflow-x-auto snap-x snap-mandatory gap-6 w-full scroll-smooth scrollbar-hide px-1"
+      style="scroll-behavior: smooth;">
+
+      <!-- rev1 -->
+      <article id="rev1" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-bold">BD</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <div class="text-amber-400">
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="far fa-star text-sm text-gray-300"></i>
+              </div>
+              <span class="text-sm text-gray-500">• 2 hari lalu</span>
+            </div>
+            <h4 class="mt-1 font-semibold text-gray-900">Proses cepat &amp; mobil bersih</h4>
+            <p class="mt-1 text-gray-700">Menurut saya bagus, proses cepat dan mobilnya bersih. Driver tepat waktu, admin responsif.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- rev2 -->
+      <article id="rev2" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">AM</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <div class="text-amber-400">
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="fas fa-star text-sm"></i>
+              </div>
+              <span class="text-sm text-gray-500">• 1 minggu lalu</span>
+            </div>
+            <h4 class="mt-1 font-semibold text-gray-900">Admin responsif, supir ramah</h4>
+            <p class="mt-1 text-gray-700">Adminnya fast respon, supirnya ramah dan tahu rute. Perpanjang sewanya juga mudah.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- rev3 -->
+      <article id="rev3" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-bold">CM</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <div class="text-amber-400">
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="fas fa-star text-sm"></i><i class="far fa-star text-sm text-gray-300"></i>
+                <i class="far fa-star text-sm text-gray-300"></i>
+              </div>
+              <span class="text-sm text-gray-500">• 3 minggu lalu</span>
+            </div>
+            <h4 class="mt-1 font-semibold text-gray-900">Pelayanan oke, harga pas</h4>
+            <p class="mt-1 text-gray-700">Unit bersih, proses ambil cepat. Cocok untuk perjalanan singkat.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- rev4 -->
+      <article id="rev4" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold">RS</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <div class="text-amber-400">
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="far fa-star text-sm text-gray-300"></i>
+              </div>
+              <span class="text-sm text-gray-500">• 5 hari lalu</span>
+            </div>
+            <h4 class="mt-1 font-semibold text-gray-900">Unit nyaman untuk keluarga</h4>
+            <p class="mt-1 text-gray-700">Kabinnya bersih dan wangi. Anak-anak betah selama perjalanan jauh.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- rev5 -->
+      <article id="rev5" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-700 font-bold">NA</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <div class="text-amber-400">
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="fas fa-star-half-alt text-sm"></i>
+              </div>
+              <span class="text-sm text-gray-500">• 4 hari lalu</span>
+            </div>
+            <h4 class="mt-1 font-semibold text-gray-900">Proses booking mudah</h4>
+            <p class="mt-1 text-gray-700">CS responsif, pembayaran jelas dan cepat konfirmasi.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- rev6 -->
+      <article id="rev6" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
+        <div class="flex items-start gap-3">
+          <div class="w-10 h-10 rounded-full bg-lime-100 flex items-center justify-center text-lime-700 font-bold">ZG</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <div class="text-amber-400">
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="fas fa-star text-sm"></i><i class="far fa-star text-sm text-gray-300"></i>
+                <i class="far fa-star text-sm text-gray-300"></i>
+              </div>
+              <span class="text-sm text-gray-500">• 2 minggu lalu</span>
+            </div>
+            <h4 class="mt-1 font-semibold text-gray-900">Supir ramah & tepat waktu</h4>
+            <p class="mt-1 text-gray-700">Sangat membantu, rekomendasi untuk wisata luar kota.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Dots -->
+    <div class="mt-4 flex items-center justify-center gap-2">
+      <a href="#rev1" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
+      <a href="#rev2" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
+      <a href="#rev3" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
+      <a href="#rev4" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
+      <a href="#rev5" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
+      <a href="#rev6" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
+    </div>
+  </div>
+
+  <!-- Fitur Layanan -->
+  <section class="bg-gray-50 mt-24 py-16">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="font-bold text-3xl mb-3 text-gray-900">Mengapa Memilih Kami?</h2>
+        <p class="text-gray-600">Keunggulan layanan yang kami tawarkan untuk Anda</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-100">
+          <div class="w-14 h-14 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
+            <i class="fas fa-car text-2xl text-blue-600"></i>
+          </div>
+          <h4 class="font-bold text-lg mb-3 text-gray-900">Armada Terawat</h4>
+          <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+            Servis berkala, interior disanitasi, inspeksi pra-jalan untuk setiap unit.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">MPV</span>
+            <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">City Car</span>
+            <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Premium</span>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-100">
+          <div class="w-14 h-14 rounded-lg bg-yellow-100 flex items-center justify-center mb-4">
+            <i class="fas fa-tag text-2xl text-yellow-600"></i>
+          </div>
+          <h4 class="font-bold text-lg mb-3 text-gray-900">Harga Transparan</h4>
+          <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+            Semua komponen biaya jelas sejak awal. Opsi pembayaran fleksibel & e-invoice.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full text-xs font-medium">Flat Rate</span>
+            <span class="bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full text-xs font-medium">Tanpa Hidden Fee</span>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-100">
+          <div class="w-14 h-14 rounded-lg bg-green-100 flex items-center justify-center mb-4">
+            <i class="fas fa-bolt text-2xl text-green-600"></i>
+          </div>
+          <h4 class="font-bold text-lg mb-3 text-gray-900">Proses Cepat</h4>
+          <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+            Form singkat via WA/website, konfirmasi instan, e-invoice otomatis.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Chat WhatsApp</span>
+            <span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Web Form</span>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-100">
+          <div class="w-14 h-14 rounded-lg bg-purple-100 flex items-center justify-center mb-4">
+            <i class="fas fa-user-tie text-2xl text-purple-600"></i>
+          </div>
+          <h4 class="font-bold text-lg mb-3 text-gray-900">Sopir Profesional</h4>
+          <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+            Pengemudi bersertifikat, memahami rute kota & wisata, prioritas keselamatan.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">Tour Friendly</span>
+            <span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">Self-Drive</span>
+          </div>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-100">
+          <div class="w-14 h-14 rounded-lg bg-pink-100 flex items-center justify-center mb-4">
+            <i class="fas fa-shield-alt text-2xl text-pink-600"></i>
+          </div>
+          <h4 class="font-bold text-lg mb-3 text-gray-900">Asuransi & Keamanan</h4>
+          <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+            Asuransi standar + opsi upgrade. Unit tertentu dilengkapi GPS & dashcam.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-pink-50 text-pink-700 px-3 py-1 rounded-full text-xs font-medium">GPS</span>
+            <span class="bg-pink-50 text-pink-700 px-3 py-1 rounded-full text-xs font-medium">Dashcam</span>
+            <span class="bg-pink-50 text-pink-700 px-3 py-1 rounded-full text-xs font-medium">Insurance</span>
+          </div>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-100">
+          <div class="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center mb-4">
+            <i class="fas fa-headset text-2xl text-gray-700"></i>
+          </div>
+          <h4 class="font-bold text-lg mb-3 text-gray-900">Dukungan 24/7</h4>
+          <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+            Tim support siap membantu perubahan jadwal, kendala teknis, keadaan darurat kapan pun.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">Hotline</span>
+            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">WhatsApp</span>
+            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-medium">Live Chat</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-12 mt-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="font-bold text-xl text-red-500 mb-4">NNCARRENT</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Layanan rental mobil terpercaya untuk perjalanan Anda yang lebih nyaman.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-4">Menu</h4>
+          <div class="flex flex-col space-y-2 text-sm">
+            <a class="hover:text-red-500 transition-colors" href="{{ route('home') }}">Beranda</a>
+            <a class="hover:text-red-500 transition-colors" href="{{ route('tentangkami') }}">Tentang Kami</a>
+            <a class="hover:text-red-500 transition-colors" href="{{ route('kategori') }}">Daftar Mobil</a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-4">Produk Kami</h4>
+          <div class="flex flex-col space-y-2 text-sm">
+            <a class="hover:text-red-500 transition-colors" href="{{ route('kategori') }}">Daftar Mobil</a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-4">Ikuti Kami</h4>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors">
+              <i class="fab fa-instagram text-white"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors">
+              <i class="fab fa-facebook-f text-white"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
+        <p>&copy; 2025 NNCARRENT. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript for Sliders -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const prevCar = document.getElementById('prevCar');
+      const nextCar = document.getElementById('nextCar');
+      const carSlider = document.getElementById('carSlider');
+
+      const prevTour = document.getElementById('prevTour');
+      const nextTour = document.getElementById('nextTour');
+      const tourSlider = document.getElementById('tourSlider');
+
+      prevCar.addEventListener('click', () => {
+        carSlider.scrollLeft -= 320;
+      });
+
+      nextCar.addEventListener('click', () => {
+        carSlider.scrollLeft += 320;
+      });
+
+      prevTour.addEventListener('click', () => {
+        tourSlider.scrollLeft -= 320;
+      });
+
+      nextTour.addEventListener('click', () => {
+        tourSlider.scrollLeft += 320;
+      });
+    });
+  </script>
 </body>
 
 </html>
