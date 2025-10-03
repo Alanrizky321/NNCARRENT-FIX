@@ -25,11 +25,13 @@ class CreatePesansTable extends Migration
             $table->enum('antar_jemput', ['antar-jemput', 'ambil-garasi'])->nullable();
             $table->string('lokasi_antar')->nullable();
             $table->string('lokasi_jemput')->nullable();
-            $table->enum('status', ['pending', 'on_going', 'finished', 'canceled'])->default('pending');
+            $table->enum('status', ['pending', 'on_going', 'finished', 'canceled', 'archived'])->default('pending');
             $table->timestamps();
 
             $table->foreign('mobil_id')->references('ID_Mobil')->on('mobil')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->unsignedBigInteger('laporan_id')->nullable();
+            $table->foreign('laporan_id')->references('id')->on('laporans')->onDelete('set null');
         });
     }
 

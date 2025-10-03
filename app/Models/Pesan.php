@@ -28,6 +28,7 @@ class Pesan extends Model
         'lokasi_jemput',
         'status',
         'total_harga',
+        'laporan_id',
     ];
 public function user(): BelongsTo
     {
@@ -42,7 +43,10 @@ public function user(): BelongsTo
         return $this->belongsTo(Mobil::class, 'mobil_id', 'ID_Mobil');
     }
 
-    
+    public function dataRekap(): BelongsTo
+    {
+        return $this->belongsTo(Laporan::class, 'laporan_id', 'id');
+    }
 }
 
 

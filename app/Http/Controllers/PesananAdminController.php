@@ -35,7 +35,6 @@ class PesananAdminController extends Controller
             'status' => 'required|in:approved,rejected',
             'rejection_reason' => 'nullable|string|max:255',
         ]);
-
         $pesan = Pesan::findOrFail($pesanId);
 
         // Update verification_status dan juga status pesanan

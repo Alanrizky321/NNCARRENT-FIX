@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Laporan extends Model
 {
@@ -14,6 +15,10 @@ class Laporan extends Model
         'tanggal_laporan',
         'jenis_laporan',
         'total',
-        'deskripsi', // jika ada
     ];
+
+    public function dataRekap(): HasMany
+    {
+        return $this->HasMany(Pesan::class, 'laporan_id', 'id');
+    }
 }
