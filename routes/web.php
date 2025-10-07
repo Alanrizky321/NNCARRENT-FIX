@@ -10,7 +10,6 @@ use App\Http\Controllers\UlasanController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PesanController;
-use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DatadiriController;
 use App\Http\Controllers\KonfirmasiController;
 use App\Http\Controllers\AdminDashboardController;
@@ -96,7 +95,7 @@ Route::prefix('pelanggan')->group(function () {
         Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
         Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
         Route::resource('pelanggan', PelangganController::class);
-        Route::get('/detail-pemesanan', [BookingController::class, 'index'])->name('pelanggan.detailPemesanan');
+        Route::get('/detail-pemesanan', [PesanController::class, 'index'])->name('pelanggan.detailPemesanan');
         Route::get('/pesanan/{id}/reschedule', [RiwayatController::class, 'reschedule'])->name('pesanan.reschedule');
         Route::put('/pesanan/{id}/reschedule', [RiwayatController::class, 'updateReschedule'])->name('pesanan.updateReschedule');
         Route::get('/booking/{mobil_id}', [DatadiriController::class, 'showForm'])->name('booking.create');

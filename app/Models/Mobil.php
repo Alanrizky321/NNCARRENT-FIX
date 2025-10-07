@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Mobil extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;  // 
 
-    protected $table = 'mobil';
-    protected $primaryKey = 'ID_Mobil';
-
+    protected $table = 'mobil';       // nama tabel
+    protected $primaryKey = 'ID_Mobil'; // primary key
 
     protected $fillable = [
         'Merek',
@@ -34,5 +34,4 @@ class Mobil extends Model
     {
         return $this->belongsTo(Kategori::class, 'Kategori_ID', 'id');
     }
-
 }
