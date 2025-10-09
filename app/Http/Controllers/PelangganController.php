@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ratingUlasan;
+use Illuminate\Support\Facades\Auth;
 
 class PelangganController extends Controller
 {
@@ -61,4 +63,21 @@ class PelangganController extends Controller
     {
         //
     }
+
+    public function ulasan(Request $request)
+    {
+        $request->validate([
+            'ratingBintang' => 'required|string',
+            'ulasan' => 'required|string',
+
+        ]);
+        $rating = (float) $request->ratingBintang;
+        ratingUlasan::create([
+            'ulasan' => $request->ulasan,
+            'rating' => $rating,
+            'user_id' => Auth::id(),
+        ]);
+        return redirect()->route('home')->with('kirimUlasanSuccess', 'Ulasan Anda Berhasil Dikirim');
+    }
+
 }

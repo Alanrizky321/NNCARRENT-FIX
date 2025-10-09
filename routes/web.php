@@ -19,6 +19,7 @@ use App\Http\Controllers\DaftarMobilAdminController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MobilController;
 use App\Http\Controllers\HomeController;
+use App\Models\Pelanggan;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +100,7 @@ Route::prefix('pelanggan')->group(function () {
         Route::get('/datadiri/{mobil_id}', [DatadiriController::class, 'showForm'])->name('datadiri.create');
         Route::post('/datadiri/store', [DatadiriController::class, 'store'])->name('datadiri.store');
         Route::get('/konfirmasi/{pesan}', [KonfirmasiController::class, 'show'])->name('konfirmasi.show');
+        Route::post('/kirim-ulasan', [PelangganController::class, 'ulasan'])->name('pelanggan.ulasan');
     });
 });
 

@@ -7,6 +7,8 @@
   <title>NNCARRENT - Rental Mobil Terpercaya</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -268,6 +270,7 @@
     </div>
   </section>
   <!-- Rating & Ulasan -->
+  @auth
 <section id="rating-ulasan" class="max-w-7xl mx-auto mt-24 px-6">
   <!-- Header + Ringkasan -->
   <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-lg">
@@ -275,16 +278,22 @@
       <div>
         <h2 class="font-bold text-3xl text-gray-900">Rating & Ulasan</h2>
         <p class="text-gray-600 mt-1">
-          Berdasarkan <span id="totalReviewsText" class="font-semibold text-red-500">2.143</span> ulasan
+          Berdasarkan <span id="totalReviewsText" class="font-semibold text-red-500">{{ $dataRating->count() }}</span> ulasan
         </p>
       </div>
 
       <!-- Ringkasan skor -->
       <div class="flex items-center gap-6 bg-gray-50 p-4 rounded-lg shadow-inner">
-        <div id="avgScore" class="text-5xl font-extrabold text-red-600">4.8</div>
+        <div id="avgScore" class="text-5xl font-extrabold text-red-600">{{ number_format($medianRating, 1) }}</div>
         <div>
           <div id="avgStars" class="flex items-center gap-1 text-yellow-500 text-xl" aria-label="Skor rata-rata">
-            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+            @for ($i = 0; $i < $starnow; $i++)
+            <i class="fas fa-star"></i>
+            @endfor
+            @for ($i = 0; $i < $emptystar; $i++)
+            <i class="far fa-star"></i>
+            @endfor
+            {{-- <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> --}}
           </div>
           <p class="text-sm text-gray-500 mt-1">Skor rata-rata</p>
         </div>
@@ -293,12 +302,14 @@
 
     <!-- FORM: tepat di bawah ringkasan -->
     <div class="mt-8">
-      <div class="rounded-2xl border border-gray-100 p-6 bg-gradient-to-br from-white to-gray-50 shadow-md">
-        <h3 class="font-semibold text-xl text-gray-900 mb-4">Tulis Ulasan Anda</h3>
-        <p class="text-sm text-gray-600 mb-6">Bagikan pengalaman Anda untuk membantu pengguna lain.</p>
+        <form action="{{ route('pelanggan.ulasan') }}" method="post">
+            @csrf
+            <div class="rounded-2xl border border-gray-100 p-6 bg-gradient-to-br from-white to-gray-50 shadow-md">
+                <h3 class="font-semibold text-xl text-gray-900 mb-4">Tulis Ulasan Anda</h3>
+                <p class="text-sm text-gray-600 mb-6">Bagikan pengalaman Anda untuk membantu pengguna lain.</p>
 
-        <!-- Rating Picker -->
-        <div class="mb-6">
+                <!-- Rating Picker -->
+                <div class="mb-6">
           <label class="block text-sm font-medium text-gray-700 mb-2">Pemberian Rating</label>
           <div id="starPicker" class="flex items-center gap-1" data-value="0" aria-label="Pilih rating 1–5">
             <i class="fas fa-star text-gray-300 cursor-pointer hover:text-yellow-500 transition-colors"></i>
@@ -308,42 +319,83 @@
             <i class="fas fa-star text-gray-300 cursor-pointer hover:text-yellow-500 transition-colors"></i>
           </div>
         </div>
+        <input type="hidden" name="ratingBintang" id="ratingBintang">
+        <script>
+             const ratingCount = document.getElementById("ratingBintang");
+             const starPicker = document.getElementById("starPicker");
+             const stars = starPicker.querySelectorAll(".fa-star");
 
-        <!-- Fields -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Nama</label>
-            <input id="rvName" type="text" class="w-full rounded-lg border-gray-200 focus:ring-2 focus:ring-red-500 focus:border-red-500 p-3 bg-white shadow-sm placeholder-gray-400" placeholder="Nama lengkap">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Lampirkan Foto (Opsional)</label>
-            <label class="flex items-center gap-2 w-full rounded-lg border border-gray-200 bg-white p-3 cursor-pointer hover:bg-gray-50 transition-colors">
-              <i class="fas fa-upload text-gray-500"></i>
-              <span class="text-sm text-gray-600" id="rvFileLabel">Pilih file…</span>
-              <input id="rvFile" type="file" class="hidden" accept="image/*">
-            </label>
-          </div>
-        </div>
+             let selectedValue = 0;
 
-        <!-- Ulasan Textarea -->
-        <div class="mt-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Ulasan Anda</label>
-          <textarea id="rvText" rows="4" maxlength="500" class="w-full rounded-lg border-gray-200 focus:ring-2 focus:ring-red-500 focus:border-red-500 p-3 bg-white shadow-sm resize-none placeholder-gray-400" placeholder="Tulis ulasan Anda di sini…"></textarea>
-          <div class="mt-2 flex items-center justify-between text-sm text-gray-500">
-            <span id="rvCount">0</span>/500 karakter
-          </div>
-        </div>
+             stars.forEach((star, index) => {
+                 star.addEventListener("mouseover", () => {
+                     stars.forEach((s, i) => {
+                         s.classList.toggle("text-yellow-500", i <= index);
+                   s.classList.toggle("text-gray-300", i > index);
+                 });
+               });
 
-        <!-- Submit Button -->
-        <div class="mt-6 text-right">
-          <button id="rvSubmit" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold text-sm px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all">
-            Kirim Ulasan
-          </button>
-        </div>
+               star.addEventListener("mouseout", () => {
+                 stars.forEach((s, i) => {
+                   s.classList.toggle("text-yellow-500", i < selectedValue);
+                   s.classList.toggle("text-gray-300", i >= selectedValue);
+                });
+            });
+
+            star.addEventListener("click", () => {
+                selectedValue = index + 1;
+                ratingCount.value = index + 1;
+                starPicker.setAttribute("data-value", selectedValue);
+                stars.forEach((s, i) => {
+                    s.classList.toggle("text-yellow-500", i < selectedValue);
+                       s.classList.toggle("text-gray-300", i >= selectedValue);
+                    });
+                    console.log(ratingCount.value);
+               });
+             });
+            </script>
+
+            <!-- Ulasan Textarea -->
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Ulasan Anda</label>
+                <textarea name="ulasan" id="rvText" rows="4" maxlength="500" class="w-full rounded-lg border-gray-200 focus:ring-2 focus:ring-red-500 focus:border-red-500 p-3 bg-white shadow-sm resize-none placeholder-gray-400" placeholder="Tulis ulasan Anda di sini…"></textarea>
+                <div class="mt-2 flex items-center justify-between text-sm text-gray-500">
+                    <span id="rvCount">0</span>/500 karakter
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-6 text-right">
+                <button type="submit" id="rvSubmit" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold text-sm px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all">
+                        Kirim Ulasan
+                </button>
+            </div>
+            @if(session()->has('kirimUlasanSuccess'))
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+              <div id="ulasanToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                  <div class="toast-body">
+                    {{ session('kirimUlasanSuccess') }}
+                  </div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+              </div>
+            </div>
+            <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                var toastEl = document.getElementById('ulasanToast');
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+              });
+            </script>
+            @endif
+        </form>
       </div>
     </div>
   </div>
 </section>
+  @endauth
+
   <!-- Apa Kata Mereka — horizontal scroll + panah, TANPA JS -->
   <div class="mt-12 max-w-7xl mx-auto relative">
     <!-- Heading -->
@@ -354,6 +406,7 @@
     </div>
 
     <!-- Panah (menggunakan button untuk scroll horizontal) -->
+    @if ($dataRating->isNotEmpty())
     <button class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -ml-2 z-20 bg-white hover:bg-red-500 hover:text-white rounded-full p-3 shadow-lg transition-colors"
       aria-label="Sebelumnya" onclick="document.getElementById('reviewsTrack').scrollLeft -= 540">
       <i class="fas fa-chevron-left"></i>
@@ -362,6 +415,7 @@
       aria-label="Berikutnya" onclick="document.getElementById('reviewsTrack').scrollLeft += 540">
       <i class="fas fa-chevron-right"></i>
     </button>
+    @endif
 
     <!-- TRACK horizontal -->
     <div id="reviewsTrack"
@@ -369,121 +423,39 @@
       style="scroll-behavior: smooth;">
 
       <!-- rev1 -->
+      @if ($dataRating->isEmpty())
+        <article id="rev1" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
+            <p>Whoopss, Data Tidak Tersedia...</p>
+        </div>
+      </article>
+      @endif
+      @foreach ( $dataRating as $rating )
       <article id="rev1" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
         <div class="flex items-start gap-3">
-          <div class="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-bold">BD</div>
+        <div class="w-16 h-16 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-bold">BD</div>
           <div class="flex-1">
             <div class="flex items-center gap-3">
               <div class="text-amber-400">
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="far fa-star text-sm text-gray-300"></i>
+                @for ($i = 0; $i < $rating->rating ; $i++)
+                <i class="fas fa-star"></i>
+                @endfor
+                @for ($i = 0; $i < 5 - $rating->rating ; $i++)
+                    <i class="far fa-star text-sm text-gray-300"></i>
+                @endfor
+                {{-- <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i> --}}
               </div>
-              <span class="text-sm text-gray-500">• 2 hari lalu</span>
+              <span class="text-sm text-gray-500">{{ $rating->rating }}</span>
             </div>
-            <h4 class="mt-1 font-semibold text-gray-900">Proses cepat &amp; mobil bersih</h4>
-            <p class="mt-1 text-gray-700">Menurut saya bagus, proses cepat dan mobilnya bersih. Driver tepat waktu, admin responsif.</p>
+            <p class="mt-1 text-gray-700">{{ $rating->ulasan }}</p>
           </div>
         </div>
       </article>
-
-      <!-- rev2 -->
-      <article id="rev2" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-        <div class="flex items-start gap-3">
-          <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">AM</div>
-          <div class="flex-1">
-            <div class="flex items-center gap-3">
-              <div class="text-amber-400">
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="fas fa-star text-sm"></i>
-              </div>
-              <span class="text-sm text-gray-500">• 1 minggu lalu</span>
-            </div>
-            <h4 class="mt-1 font-semibold text-gray-900">Admin responsif, supir ramah</h4>
-            <p class="mt-1 text-gray-700">Adminnya fast respon, supirnya ramah dan tahu rute. Perpanjang sewanya juga mudah.</p>
-          </div>
-        </div>
-      </article>
-
-      <!-- rev3 -->
-      <article id="rev3" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-        <div class="flex items-start gap-3">
-          <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-bold">CM</div>
-          <div class="flex-1">
-            <div class="flex items-center gap-3">
-              <div class="text-amber-400">
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="fas fa-star text-sm"></i><i class="far fa-star text-sm text-gray-300"></i>
-                <i class="far fa-star text-sm text-gray-300"></i>
-              </div>
-              <span class="text-sm text-gray-500">• 3 minggu lalu</span>
-            </div>
-            <h4 class="mt-1 font-semibold text-gray-900">Pelayanan oke, harga pas</h4>
-            <p class="mt-1 text-gray-700">Unit bersih, proses ambil cepat. Cocok untuk perjalanan singkat.</p>
-          </div>
-        </div>
-      </article>
-
-      <!-- rev4 -->
-      <article id="rev4" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-        <div class="flex items-start gap-3">
-          <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold">RS</div>
-          <div class="flex-1">
-            <div class="flex items-center gap-3">
-              <div class="text-amber-400">
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="far fa-star text-sm text-gray-300"></i>
-              </div>
-              <span class="text-sm text-gray-500">• 5 hari lalu</span>
-            </div>
-            <h4 class="mt-1 font-semibold text-gray-900">Unit nyaman untuk keluarga</h4>
-            <p class="mt-1 text-gray-700">Kabinnya bersih dan wangi. Anak-anak betah selama perjalanan jauh.</p>
-          </div>
-        </div>
-      </article>
-
-      <!-- rev5 -->
-      <article id="rev5" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-        <div class="flex items-start gap-3">
-          <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-700 font-bold">NA</div>
-          <div class="flex-1">
-            <div class="flex items-center gap-3">
-              <div class="text-amber-400">
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="fas fa-star-half-alt text-sm"></i>
-              </div>
-              <span class="text-sm text-gray-500">• 4 hari lalu</span>
-            </div>
-            <h4 class="mt-1 font-semibold text-gray-900">Proses booking mudah</h4>
-            <p class="mt-1 text-gray-700">CS responsif, pembayaran jelas dan cepat konfirmasi.</p>
-          </div>
-        </div>
-      </article>
-
-      <!-- rev6 -->
-      <article id="rev6" class="snap-center rounded-2xl bg-white border border-gray-200 p-5 shadow-sm">
-        <div class="flex items-start gap-3">
-          <div class="w-10 h-10 rounded-full bg-lime-100 flex items-center justify-center text-lime-700 font-bold">ZG</div>
-          <div class="flex-1">
-            <div class="flex items-center gap-3">
-              <div class="text-amber-400">
-                <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
-                <i class="fas fa-star text-sm"></i><i class="far fa-star text-sm text-gray-300"></i>
-                <i class="far fa-star text-sm text-gray-300"></i>
-              </div>
-              <span class="text-sm text-gray-500">• 2 minggu lalu</span>
-            </div>
-            <h4 class="mt-1 font-semibold text-gray-900">Supir ramah & tepat waktu</h4>
-            <p class="mt-1 text-gray-700">Sangat membantu, rekomendasi untuk wisata luar kota.</p>
-          </div>
-        </div>
-      </article>
+      @endforeach
     </div>
-
+    <br>
     <!-- Dots -->
+    @if ($dataRating->isNotEmpty())
     <div class="mt-4 flex items-center justify-center gap-2">
       <a href="#rev1" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
       <a href="#rev2" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
@@ -492,6 +464,7 @@
       <a href="#rev5" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
       <a href="#rev6" class="w-2.5 h-2.5 rounded-full bg-gray-300 hover:bg-red-500"></a>
     </div>
+    @endif
   </div>
 
   <!-- Fitur Layanan -->
