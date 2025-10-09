@@ -20,7 +20,7 @@ class HomeController extends Controller
             'dataRating',
             'medianRating',
             'starnow',
-            'emptystar'
+            'emptystar',
         ]));
     }
 

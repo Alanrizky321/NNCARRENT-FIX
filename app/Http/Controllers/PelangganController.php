@@ -71,13 +71,20 @@ class PelangganController extends Controller
             'ulasan' => 'required|string',
 
         ]);
-        $rating = (float) $request->ratingBintang;
-        ratingUlasan::create([
-            'ulasan' => $request->ulasan,
-            'rating' => $rating,
-            'user_id' => Auth::id(),
-        ]);
-        return redirect()->route('home')->with('kirimUlasanSuccess', 'Ulasan Anda Berhasil Dikirim');
+        $user = auth()->user();
+        $pesananUser = $user->pesanan()->where('status', 'finished')->get();
+        if ($pesananUser->isNotEmpty()) {
+            dd('Sudah Memesan');
+            $rating = (float) $request->ratingBintang;
+            ratingUlasan::create([
+                'ulasan' => $request->ulasan,
+                'rating' => $rating,
+                'user_id' => Auth::id(),
+            ]);
+            return redirect()->back()->with('kirimUlasanSuccess', 'Ulasan Anda Berhasil Dikirim');
+        } else {
+            return redirect()->back()->with('kirimUlasanFailed', 'Ulasan Anda Berhasil Dikirim');
+        };
     }
 
 }

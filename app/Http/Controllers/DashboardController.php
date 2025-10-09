@@ -25,7 +25,7 @@ class DashboardController extends Controller
             'dataRating',
             'medianRating',
             'starnow',
-            'emptystar'
+            'emptystar',
         ]));
     }
 }

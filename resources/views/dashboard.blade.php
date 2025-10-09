@@ -270,7 +270,7 @@
     </div>
   </section>
   <!-- Rating & Ulasan -->
-  @auth ()
+  @if(auth()->check())
     <section id="rating-ulasan" class="max-w-7xl mx-auto mt-24 px-6">
       <!-- Header + Ringkasan -->
       <div class="bg-white border border-gray-100 rounded-2xl p-6 shadow-lg">
@@ -389,12 +389,31 @@
                   });
                 </script>
                 @endif
+                @if(session()->has('kirimUlasanFailed'))
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                    <div id="ulasanToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                Sebelum Memberikan Rating, Anda Harus Memesan terlebih dahulu.
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var toastEl = document.getElementById('ulasanToast');
+                        var toast = new bootstrap.Toast(toastEl);
+                        toast.show();
+                    });
+                </script>
+            @endif
             </form>
           </div>
         </div>
       </div>
     </section>
-  @endauth
+  @endif
   <!-- Apa Kata Mereka — horizontal scroll + panah, TANPA JS -->
    <div class="mt-12 max-w-7xl mx-auto relative">
     <!-- Heading -->
