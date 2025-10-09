@@ -29,7 +29,7 @@ class CreatePesansTable extends Migration
             $table->timestamps();
 
             $table->foreign('mobil_id')->references('ID_Mobil')->on('mobil')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('user_id')->references('ID_Pelanggan')->on('pelanggan')->onDelete('set null');
             $table->unsignedBigInteger('laporan_id')->nullable();
             $table->foreign('laporan_id')->references('id')->on('laporans')->onDelete('set null');
         });

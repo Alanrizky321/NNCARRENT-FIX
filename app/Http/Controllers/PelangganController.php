@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pesan;
 use Illuminate\Http\Request;
 use App\Models\ratingUlasan;
 use Illuminate\Support\Facades\Auth;
@@ -72,9 +73,8 @@ class PelangganController extends Controller
 
         ]);
         $user = auth()->user();
-        $pesananUser = $user->pesanan()->where('status', 'finished')->get();
+        $pesananUser = Pesan::where('user_id', $user->ID_Pelanggan)->whereIn('status', ['finished', 'archived'])->get();
         if ($pesananUser->isNotEmpty()) {
-            dd('Sudah Memesan');
             $rating = (float) $request->ratingBintang;
             ratingUlasan::create([
                 'ulasan' => $request->ulasan,

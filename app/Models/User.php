@@ -7,6 +7,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -43,6 +45,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
+        public function pesanan(): HasMany
+    {
+        return $this->HasMany(Pesan::class, 'user_id', 'id');
+    }
+
     /**
      * Create a new user within a transaction.
      *
@@ -71,5 +78,6 @@ class User extends Authenticatable implements MustVerifyEmail
             // Tangani error (misalnya log error atau beri pesan kesalahan)
             return null;
         }
+
     }
 }
