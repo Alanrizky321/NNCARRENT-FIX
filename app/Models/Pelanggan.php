@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pelanggan extends Authenticatable
 {
@@ -12,4 +13,9 @@ class Pelanggan extends Authenticatable
 
     // Jika timestamp tidak digunakan, tambahkan ini
     public $timestamps = true;
+
+    public function pesanan(): HasMany
+    {
+        return $this->HasMany(Pesan::class, 'user_id', 'id');
+    }
 }

@@ -16,31 +16,33 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // *** Scope untuk cek tanggal kadaluarsa pemesanan ***
-// Schedule::call(function () {
-//     DB::table('pesans')
-//         ->where('tanggal_selesai', '<', now())
-//         ->where('status', 'on_going')
-//         ->update(['status' => 'finished']);
-// })->everySecond();
 Schedule::call(function () {
     DB::table('pesans')
-        ->where('tanggal_selesai', '>=', now())
+        ->where('tanggal_selesai', '>', now())
+        ->where('status', 'finished')
+        ->update(['status' => 'on_going']);
+})->everyMinute();
+Schedule::call(function () {
+    DB::table('pesans')
+        ->where('tanggal_selesai', '<', now())
         ->where('status', 'on_going')
         ->update(['status' => 'finished']);
-})->everySecond();
+})->everyMinute();
 Schedule::call(function () {
     $pesanans = Pesan::where('status', 'finished')->where('tanggal_selesai', '<=', Carbon::now()->subWeek())->get();
     $totalRekap = $pesanans->sum('total_harga');
-    $laporanBaru = Laporan::create([
-        'tanggal_laporan' => Carbon::now(),
-        'jenis_laporan' => 'Mingguan',
-        'total' => $totalRekap,
-        'deskripsi' => 'Rekapan Selama Seminggu',
-    ]);
-    foreach ($pesanans as $pesanan) {
-        $pesanan->update([
-            'status' => 'archived',
-            'laporan_id' => $laporanBaru->id
+    if ($pesanans->isNotEmpty()) {
+        $laporanBaru = Laporan::create([
+            'tanggal_laporan' => Carbon::now(),
+            'jenis_laporan' => 'Mingguan',
+            'total' => $totalRekap,
+            'deskripsi' => 'Rekapan Selama Seminggu',
         ]);
+        foreach ($pesanans as $pesanan) {
+            $pesanan->update([
+                'status' => 'archived',
+                'laporan_id' => $laporanBaru->id
+            ]);
+        }
     }
-})->weekly();
+})->everyMinute();

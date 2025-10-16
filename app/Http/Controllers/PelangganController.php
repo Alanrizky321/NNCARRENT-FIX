@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pesan;
 use Illuminate\Http\Request;
+use App\Models\ratingUlasan;
+use Illuminate\Support\Facades\Auth;
 
 class PelangganController extends Controller
 {
@@ -61,4 +64,27 @@ class PelangganController extends Controller
     {
         //
     }
+
+    public function ulasan(Request $request)
+    {
+        $request->validate([
+            'ratingBintang' => 'required|string',
+            'ulasan' => 'required|string',
+
+        ]);
+        $user = auth()->user();
+        $pesananUser = Pesan::where('user_id', $user->ID_Pelanggan)->whereIn('status', ['finished', 'archived'])->get();
+        if ($pesananUser->isNotEmpty()) {
+            $rating = (float) $request->ratingBintang;
+            ratingUlasan::create([
+                'ulasan' => $request->ulasan,
+                'rating' => $rating,
+                'user_id' => Auth::id(),
+            ]);
+            return redirect()->back()->with('kirimUlasanSuccess', 'Ulasan Anda Berhasil Dikirim');
+        } else {
+            return redirect()->back()->with('kirimUlasanFailed', 'Ulasan Anda Berhasil Dikirim');
+        };
+    }
+
 }

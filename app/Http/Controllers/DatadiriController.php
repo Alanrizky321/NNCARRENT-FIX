@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pesan;
 use App\Models\Mobil;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DatadiriController extends Controller
 {
@@ -47,8 +48,9 @@ class DatadiriController extends Controller
         if ($validated['pickup_method'] === 'antar-jemput') {
             $totalHarga += $biayaAntarJemput;
         }
-
+        $user = Auth::guard('pelanggan')->user();
         $pesan = Pesan::create([
+            'user_id' => $user->ID_Pelanggan,
             'mobil_id' => $validated['mobil_id'],
             'tanggal_mulai' => $validated['rental_date'],
             'tanggal_selesai' => $validated['return_date'],

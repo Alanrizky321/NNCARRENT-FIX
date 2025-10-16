@@ -11,6 +11,7 @@ class Pesan extends Model
 
     protected $fillable = [
         'mobil_id',
+        'user_id',
         'tanggal_mulai',
         'tanggal_selesai',
         'nama_pelanggan',
