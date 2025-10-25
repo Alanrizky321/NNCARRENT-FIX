@@ -287,7 +287,7 @@
                 Bergabunglah bersama
                 <span>NNCARRENT</span>
             </div>
-            <img src="web.jpg" alt="Register Illustration">
+   <img src="{{ asset('storage/web.jpg') }}" alt="logo"
         </div>
     </div>
 </body>

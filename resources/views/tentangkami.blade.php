@@ -72,8 +72,7 @@
   </nav>
   <main class="max-w-5xl mx-auto px-6 py-12">
    <div class="flex justify-center mb-6">
-   <img 
-    alt="Logo NNFamily Trans Wisata with NN in black gradient and Family Trans Wisata in red" 
+   <img src="{{ asset('storage/web.jpg') }}" alt="logo"
     class="h-28 object-contain" 
     height="120" 
     src="web.jpg" 
@@ -92,6 +91,23 @@
    <p class="mb-10 text-sm leading-relaxed max-w-4xl mx-auto">
     Dengan semangat dan komitmen yang tinggi untuk mengutamakan kepuasan konsumen di bidang jasa sewa mobil lepas kunci untuk membantu pengalamamn anda menikmati kawasan eksotis di Banyuwangi.
     Dengan pengalaman lebih dari 5 tahun di bidang jasa sewa mobil, tour and travel tentu kami bisa menjadi partner terbaik untuk perjalanan Anda. Perusahaan ini dalam setiap layanannya selalu mengutamakan kepuasan konsumen. Oleh sebab itu, kami selalu menyediakan armada terbaru yang bersih dan terawat.
+    
+    <section id="lokasi" class="py-12 bg-gray-100">
+  <div class="container mx-auto px-4">
+    <h2 class="text-2xl font-bold mb-4 text-center">Lokasi Kami</h2>
+    <p class="text-center text-gray-600 mb-6">
+      Kunjungi kantor kami di Banyuwangi untuk informasi lebih lanjut
+    </p>
+
+    <div class="flex justify-center">
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3949.0168384755116!2d114.359112573733!3d-8.201057182259936!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd145006e2aa36b%3A0xaee19c765e4bdfc9!2sRental%20Mobil%20NNFamily%20Trans%20Wisata!5e0!3m2!1sid!2sid!4v1760601477825!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>        
+        
+    </div>
+  </div>
+</section>
+
+ 
+ 
   </main>
  </body>
 </html>

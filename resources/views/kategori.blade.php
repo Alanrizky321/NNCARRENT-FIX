@@ -15,6 +15,7 @@
 </head>
 <body class="bg-white text-gray-900">
 <header class="bg-gray-900 text-white">
+    
     <nav class="bg-[#2a2727] flex items-center justify-between px-6 py-4">
         <div class="text-[#ff2a2a] font-extrabold text-xl select-none">NNCARRENT</div>
         <ul class="flex space-x-6 text-white text-sm font-normal">
@@ -63,44 +64,9 @@
 <section class="max-w-7xl mx-auto px-6 py-8">
     <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-12 space-y-4 sm:space-y-0">
         <div class="flex items-center space-x-8 text-xs sm:text-sm text-gray-900 font-normal relative">
-            <button aria-current="page" class="text-red-400 font-normal focus:outline-none">Daftar Mobil</button>
+           
 
-            <div class="relative">
-                <button id="sortButton" class="flex items-center space-x-1 hover:text-gray-700 focus:outline-none">
-                    <span>Harga</span>
-                    <i class="fas fa-chevron-down text-xs"></i>
-                </button>
-                <div id="sortMenu" class="hidden absolute bg-white shadow rounded mt-2 py-1 w-32 z-10">
-                    <a href="?sort=asc" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Termurah</a>
-                    <a href="?sort=desc" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Termahal</a>
-                </div>
-            </div>
-
-            <div class="relative">
-    <button id="jenisButton" class="flex items-center space-x-1 hover:text-gray-700 focus:outline-none">
-        <span>Jenis</span>
-        <i class="fas fa-chevron-down text-xs"></i>
-    </button>
-    <div id="jenisMenu" class="hidden absolute bg-white shadow rounded mt-2 py-1 w-32 z-10">
-        <a href="?kategori=SUV" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">SUV</a>
-        <a href="?kategori=MPV" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">MPV</a>
-        <a href="?kategori=SUV" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sedan</a>
-        <a href="?kategori=MPV" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hatchback</a>
-        <a href="?kategori=MPV" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Minibus</a>
-        <a href="?kategori=SUV" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Transmisi Manual</a>
-        <a href="?kategori=MPV" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Transmisi Automatic</a>
-    </div>
-</div>
-
-        <form class="ml-auto w-full sm:w-auto">
-            <label class="sr-only" for="search">Search</label>
-            <div class="relative text-gray-400 focus-within:text-gray-600 w-full sm:w-64">
-                <input class="block w-full bg-gray-100 rounded-md py-2 pl-4 pr-10 text-xs sm:text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:bg-white" id="search" name="search" placeholder="Search" type="search" />
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <i class="fas fa-search text-xs"></i>
-                </div>
-            </div>
-        </form>
+        
     </div>
     <hr class="mt-6 border-t border-gray-300" />
 </section>
@@ -166,7 +132,7 @@
             <a aria-label="Instagram" class="hover:text-[#f44343]" href="#"><i class="fab fa-instagram text-lg"></i></a>
         </div>
         <div class="flex items-center">
-            <img src="web.jpg" alt="Logo" class="h-10 object-contain" width="120" />
+            <img src="{{ asset('storage/web.jpg') }}" alt="logo"class="h-10 object-contain" width="120" />
         </div>
     </div>
 </footer>

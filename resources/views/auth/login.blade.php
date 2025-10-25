@@ -265,7 +265,7 @@
                 Halo, Selamat datang kembali di
                 <span>NNCARRENT</span>
             </div>
-            <img src="web.jpg" alt="NN Family Trans Wisata">
+   <img src="{{ asset('storage/web.jpg') }}" alt="logo"
         </div>
     </div>
 

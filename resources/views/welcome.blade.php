@@ -5,6 +5,7 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <title>NNCARRENT - Rental Mobil Terpercaya</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -219,55 +220,55 @@
         </button>
 
         <div id="tourSlider" class="flex space-x-6 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory pb-4">
-          <!-- Card 1 -->
-          <div class="min-w-[320px] snap-center flex-shrink-0 group">
-            <div class="relative overflow-hidden rounded-xl shadow-lg">
-              <img src="ijen.jpg" alt="Kawah Ijen" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-              <div class="absolute bottom-0 left-0 right-0 p-6">
-                <h3 class="text-white font-bold text-xl mb-2">Kawah Ijen</h3>
-                <p class="text-gray-200 text-sm">Fenomena api biru yang memukau</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="min-w-[320px] snap-center flex-shrink-0 group">
-            <div class="relative overflow-hidden rounded-xl shadow-lg">
-              <img src="pm.jpg" alt="Pantai Pulau Merah" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-              <div class="absolute bottom-0 left-0 right-0 p-6">
-                <h3 class="text-white font-bold text-xl mb-2">Pantai Pulau Merah</h3>
-                <p class="text-gray-200 text-sm">Surga peselancar dengan pemandangan eksotis</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="min-w-[320px] snap-center flex-shrink-0 group">
-            <div class="relative overflow-hidden rounded-xl shadow-lg">
-              <img src="purwo.jpg" alt="Alas Purwo" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-              <div class="absolute bottom-0 left-0 right-0 p-6">
-                <h3 class="text-white font-bold text-xl mb-2">Alas Purwo</h3>
-                <p class="text-gray-200 text-sm">Hutan lindung dengan keanekaragaman hayati</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button id="nextTour" aria-label="Next tour" class="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-red-500 hover:text-white rounded-full p-3 z-20 transition-all shadow-lg">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-
-      <div class="text-center mt-12">
-        <a href="{{ route('wisata') }}" class="inline-flex items-center space-x-2 bg-red-500 hover:bg-red-600 transition-all duration-300 rounded-lg px-8 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl">
-          <span>Lihat Selengkapnya</span>
-          <i class="fas fa-arrow-right"></i>
-        </a>
+           <!-- Card 1 -->
+  <div class="min-w-[320px] snap-center flex-shrink-0 group">
+    <div class="relative overflow-hidden rounded-xl shadow-lg">
+      <img src="{{ asset('storage/ijen.jpg') }}" alt="Kawah Ijen" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-6">
+        <h3 class="text-white font-bold text-xl mb-2">Kawah Ijen</h3>
+        <p class="text-gray-200 text-sm">Fenomena api biru yang memukau</p>
       </div>
     </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="min-w-[320px] snap-center flex-shrink-0 group">
+    <div class="relative overflow-hidden rounded-xl shadow-lg">
+      <img src="{{ asset('storage/pm.jpg') }}" alt="Pantai Pulau Merah" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-6">
+        <h3 class="text-white font-bold text-xl mb-2">Pantai Pulau Merah</h3>
+        <p class="text-gray-200 text-sm">Surga peselancar dengan pemandangan eksotis</p>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- Card 3 -->
+  <div class="min-w-[320px] snap-center flex-shrink-0 group">
+    <div class="relative overflow-hidden rounded-xl shadow-lg">
+      <img src="{{ asset('storage/purwo.jpg') }}" alt="Alas Purwo" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-6">
+        <h3 class="text-white font-bold text-xl mb-2">Alas Purwo</h3>
+        <p class="text-gray-200 text-sm">Hutan lindung dengan keanekaragaman hayati</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="text-center mt-12">
+
+
+  <a href="{{ route('wisata') }}" class="inline-flex items-center space-x-2 bg-red-500 hover:bg-red-600 transition-all duration-300 rounded-lg px-8 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl">
+    <span>Lihat Selengkapnya</span>
+    <i class="fas fa-arrow-right"></i>
+  </a>
+</div>
   </section>
   <!-- Rating & Ulasan -->
   @if (auth()->check())
@@ -580,19 +581,7 @@
         </div>
 
         <!-- Feature 4 -->
-        <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-100">
-          <div class="w-14 h-14 rounded-lg bg-purple-100 flex items-center justify-center mb-4">
-            <i class="fas fa-user-tie text-2xl text-purple-600"></i>
-          </div>
-          <h4 class="font-bold text-lg mb-3 text-gray-900">Sopir Profesional</h4>
-          <p class="text-sm text-gray-600 mb-4 leading-relaxed">
-            Pengemudi bersertifikat, memahami rute kota & wisata, prioritas keselamatan.
-          </p>
-          <div class="flex flex-wrap gap-2">
-            <span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">Tour Friendly</span>
-            <span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">Self-Drive</span>
-          </div>
-        </div>
+      
 
         <!-- Feature 5 -->
         <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-100">
