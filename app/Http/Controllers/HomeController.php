@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Mobil;
 use App\Models\ratingUlasan;
+use Illuminate\Support\Facades\Auth;
+
 
 class HomeController extends Controller
 {
     public function index()
     {
+        if (Auth::guard('pelanggan')->check()) {
+            return redirect(route('dashboard'));
+        }
         $mobils = Mobil::all()->take(6); // Ambil 6 mobil teratas
         $dataRating = ratingUlasan::latest()->get();
         $medianRating = ratingUlasan::avg('rating');

@@ -26,7 +26,7 @@ use App\Models\Pelanggan;
 | Public Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::middleware('guest')->get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tentangkami', [HomeController::class, 'tentangkami'])->name('tentangkami');
 Route::get('/kategori', [HomeController::class, 'kategori'])->name('kategori');
 
