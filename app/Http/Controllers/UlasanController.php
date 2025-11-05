@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Mobil;   
+use App\Models\Pesan; 
 class UlasanController extends Controller
 {
     // Menampilkan halaman ulasan
@@ -39,12 +40,40 @@ class UlasanController extends Controller
             'comment' => 'required|string|max:500',
             'car_model' => 'required|string' // Tambahkan field yang diperlukan
         ]);
+  $mobil = Mobil::where('Model', $validated['car_model'])->first();
 
-        // Di sini, kita tidak perlu menyimpan data ke database, cukup melakukan sesuatu, misalnya menyimpan di session atau mengirimkan ke admin
-        // Contoh, kita akan menyimpan ulasan dalam session untuk sementara
-        session()->flash('success', 'Ulasan berhasil dikirim!');
-        session()->flash('latest_review', $validated); // Menyimpan ulasan terbaru di session
-
-        return back();
+    if (! $mobil) {
+        return back()->withErrors([
+            'car_model' => 'Model mobil tidak ditemukan.',
+        ])->withInput();
     }
+
+    $userId = auth('pelanggan')->id();
+
+    // apakah user punya pesanan selesai untuk mobil tsb?
+    $punyaSelesai = Pesan::where('user_id', $userId)
+        ->where('mobil_id', $mobil->ID_Mobil ?? $mobil->id)
+        ->whereIn('status', ['finished','completed']) // sesuaikan enum kamu
+        ->exists();
+
+    if (! $punyaSelesai) {
+        // cek apakah justru masih aktif
+        $masihAktif = Pesan::where('user_id', $userId)
+            ->where('mobil_id', $mobil->ID_Mobil ?? $mobil->id)
+            ->whereIn('status', ['pending','booked','on_going'])
+            ->exists();
+
+        return back()->withErrors([
+            'car_model' => $masihAktif
+                ? 'Silakan selesaikan pesanan dulu untuk memberi ulasan.'
+                : 'Silakan pesan dulu untuk memberi ulasan.',
+        ])->withInput();
+    }
+
+    // SUKSES: samakan teks dengan yang di-test
+    session()->flash('success', 'Berhasil memberikan Rating dan ulasan.');
+    session()->flash('latest_review', $validated);
+
+    return back();
+}
 }

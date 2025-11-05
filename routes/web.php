@@ -87,8 +87,8 @@ Route::prefix('pelanggan')->group(function () {
     Route::middleware(['auth:pelanggan'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
-        Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan');
-        Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
+    
+       
         Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
         Route::resource('pelanggan', PelangganController::class);
         Route::get('/detail-pemesanan', [PesanController::class, 'index'])->name('pelanggan.detailPemesanan');
@@ -133,3 +133,8 @@ Route::prefix('laporan')->group(function () {
     Route::get('/{id}', [LaporanController::class, 'show'])->name('laporan.show');
     Route::delete('/{id}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
 });
+
+ Route::middleware('auth:pelanggan')->group(function () {
+  Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan');
+  Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
+        });

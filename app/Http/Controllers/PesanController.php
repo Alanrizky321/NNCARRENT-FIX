@@ -26,7 +26,7 @@ class PesanController extends Controller
             $validated = $request->validate([
                 'mobil_id' => 'required|exists:mobils,ID_Mobil',
                 'customer_name' => 'required|string|max:255',
-                'phone_number' => 'required|string|max:15',
+                'phone_number' => 'required|string|max:15','regex:/^\d{10,15}$/',   
                 'email' => 'required|email|max:255',
                 'rental_date' => 'required|date|after_or_equal:' . now()->addDays(2)->toDateString(),
                 'return_date' => 'required|date|after:rental_date',

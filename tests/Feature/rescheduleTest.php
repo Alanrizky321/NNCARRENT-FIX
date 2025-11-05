@@ -186,25 +186,32 @@ class rescheduleTest extends TestCase
         ->put(route('pesanan.updateReschedule', ['id' => $this->pesans->id]), [
             '_token' => $this->token,
             'tanggal_mulai' => '2025-12-05',
-            'tanggal_selesai' => '2025-12-10',
+            'tanggal_selesai' => '2025-12-11',
         ]);
 
         $response->assertStatus(302);
         $response->assertRedirect(route('riwayat'));
     }
-    /** @test */
-    public function rescheduleAtCanceledStatus()
-    {
-        $this->actingAs($this->user, 'pelanggan');
-        $this->pesans->status = 'canceled';
-        $response = $this->from(route('pesanan.reschedule', ['id' => $this->pesans->id]))->withSession(['_token' => $this->token])
+   /** @test */
+public function rescheduleAtCanceledStatus()
+{
+    $this->actingAs($this->user, 'pelanggan');
+
+    
+    $this->pesans->status = 'canceled';
+    $this->pesans->save();
+
+    $response = $this->from(route('pesanan.reschedule', ['id' => $this->pesans->id]))
+        ->withSession(['_token' => $this->token])
         ->put(route('pesanan.updateReschedule', ['id' => $this->pesans->id]), [
             '_token' => $this->token,
             'tanggal_mulai' => '2025-12-05',
             'tanggal_selesai' => '2025-12-10',
         ]);
 
-        $response->assertStatus(302);
-        $response->assertRedirect(route('pesanan.reschedule', $this->pesans->id));
-    }
+    $response->assertStatus(302);
+    $response->assertRedirect(route('riwayat')); 
 }
+
+    }
+

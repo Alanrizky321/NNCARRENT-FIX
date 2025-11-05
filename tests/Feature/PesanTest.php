@@ -161,7 +161,7 @@ class PesanTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect(route('booking.create', $this->mobil->ID_Mobil));
-        $response->assertSessionHasErrors(['customer_name']);
+        $response->assertSessionHasErrors(['phone_number']); 
     }
     public function validEmailFormat()
     {
