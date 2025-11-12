@@ -3,9 +3,11 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 
 class Pelanggan extends Authenticatable
 {
+    use Notifiable;
     protected $table = 'pelanggan'; // Nama tabel
     protected $primaryKey = 'ID_Pelanggan'; // Primary key
     public $incrementing = true; // Primary key auto-increment

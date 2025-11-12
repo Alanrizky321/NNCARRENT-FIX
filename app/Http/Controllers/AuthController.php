@@ -206,6 +206,7 @@ class AuthController extends Controller
                 ? back()->with('status', trans($response))
                 : back()->withErrors(['email' => trans($response)]);
         } catch (\Exception $e) {
+            dd('Reset password error: ' . $e->getMessage());
             Log::error('Reset password error: ' . $e->getMessage());
             return back()->withErrors(['email' => 'Terjadi kesalahan, coba lagi nanti.']);
         }

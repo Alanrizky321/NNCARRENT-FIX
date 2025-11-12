@@ -20,10 +20,9 @@ class RiwayatController extends Controller
 
             // Ambil semua pesanan milik user login + relasi mobil
             $pesanan = Pesan::with('mobil')
-                ->where('user_id', $user->id)
+                ->where('user_id', $user->ID_Pelanggan)
                 ->orderBy('created_at', 'desc')
                 ->get();
-
             return view('riwayat', compact('pesanan')); // ✅ ini sesuai blade kamu
         } catch (\Exception $e) {
             Log::error('Gagal memuat riwayat: ' . $e->getMessage(), ['exception' => $e]);

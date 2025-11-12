@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <title>NNCARRENT - Rental Mobil Terpercaya</title>
-  
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -223,7 +223,7 @@
            <!-- Card 1 -->
   <div class="min-w-[320px] snap-center flex-shrink-0 group">
     <div class="relative overflow-hidden rounded-xl shadow-lg">
-      <img src="{{ asset('storage/ijen.jpg') }}" alt="Kawah Ijen" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+      <img src="{{ asset('storage\destinasi_wisata\kawahijen.jpeg') }}" alt="Kawah Ijen" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
       <div class="absolute bottom-0 left-0 right-0 p-6">
         <h3 class="text-white font-bold text-xl mb-2">Kawah Ijen</h3>
@@ -235,7 +235,7 @@
   <!-- Card 2 -->
   <div class="min-w-[320px] snap-center flex-shrink-0 group">
     <div class="relative overflow-hidden rounded-xl shadow-lg">
-      <img src="{{ asset('storage/pm.jpg') }}" alt="Pantai Pulau Merah" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+      <img src="{{ asset('storage\destinasi_wisata\pulaumerah.jpg') }}" alt="Pantai Pulau Merah" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
       <div class="absolute bottom-0 left-0 right-0 p-6">
         <h3 class="text-white font-bold text-xl mb-2">Pantai Pulau Merah</h3>
@@ -244,12 +244,12 @@
     </div>
   </div>
 
-  
+
 
   <!-- Card 3 -->
   <div class="min-w-[320px] snap-center flex-shrink-0 group">
     <div class="relative overflow-hidden rounded-xl shadow-lg">
-      <img src="{{ asset('storage/purwo.jpg') }}" alt="Alas Purwo" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+      <img src="{{ asset('storage\destinasi_wisata\alaspurwo.jpeg') }}" alt="Alas Purwo" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
       <div class="absolute bottom-0 left-0 right-0 p-6">
         <h3 class="text-white font-bold text-xl mb-2">Alas Purwo</h3>
@@ -581,7 +581,7 @@
         </div>
 
         <!-- Feature 4 -->
-      
+
 
         <!-- Feature 5 -->
         <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow p-6 border border-gray-100">
