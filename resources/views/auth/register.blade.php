@@ -125,7 +125,6 @@
         .welcome-text {
             font-family: Arial, sans-serif;
             color: #333;
-            margin-bottom: 40px;
             font-size: 20px;
             line-height: 1.5;
         }
@@ -184,7 +183,6 @@
 
             .welcome-text {
                 font-size: 18px;
-                margin-bottom: 30px;
             }
 
             .welcome-text span {
@@ -287,7 +285,7 @@
                 Bergabunglah bersama
                 <span>NNCARRENT</span>
             </div>
-   <img src="{{ asset('storage/web.jpg') }}" alt="logo"
+   <img src="{{ asset('android-chrome-512x512.png') }}" alt="logo"
         </div>
     </div>
 </body>

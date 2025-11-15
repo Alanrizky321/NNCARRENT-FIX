@@ -223,7 +223,7 @@
            <!-- Card 1 -->
   <div class="min-w-[320px] snap-center flex-shrink-0 group">
     <div class="relative overflow-hidden rounded-xl shadow-lg">
-      <img src="{{ asset('storage\destinasi_wisata\kawahijen.jpeg') }}" alt="Kawah Ijen" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+      <img src="{{ asset('destinasi_wisata\kawahijen.jpeg') }}" alt="Kawah Ijen" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
       <div class="absolute bottom-0 left-0 right-0 p-6">
         <h3 class="text-white font-bold text-xl mb-2">Kawah Ijen</h3>
@@ -235,7 +235,7 @@
   <!-- Card 2 -->
   <div class="min-w-[320px] snap-center flex-shrink-0 group">
     <div class="relative overflow-hidden rounded-xl shadow-lg">
-      <img src="{{ asset('storage\destinasi_wisata\pulaumerah.jpg') }}" alt="Pantai Pulau Merah" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+      <img src="{{ asset('destinasi_wisata\pulaumerah.jpg') }}" alt="Pantai Pulau Merah" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
       <div class="absolute bottom-0 left-0 right-0 p-6">
         <h3 class="text-white font-bold text-xl mb-2">Pantai Pulau Merah</h3>
@@ -249,7 +249,7 @@
   <!-- Card 3 -->
   <div class="min-w-[320px] snap-center flex-shrink-0 group">
     <div class="relative overflow-hidden rounded-xl shadow-lg">
-      <img src="{{ asset('storage\destinasi_wisata\alaspurwo.jpeg') }}" alt="Alas Purwo" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+      <img src="{{ asset('destinasi_wisata\alaspurwo.jpeg') }}" alt="Alas Purwo" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
       <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
       <div class="absolute bottom-0 left-0 right-0 p-6">
         <h3 class="text-white font-bold text-xl mb-2">Alas Purwo</h3>
