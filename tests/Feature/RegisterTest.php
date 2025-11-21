@@ -19,6 +19,7 @@ class RegisterTest extends TestCase
             'no_hp' => '0812345678910',
             'email' => 'test@example.com',
             'password' => 'Abc12345!',
+            'password_confirmation' => 'Abc12345!',
         ]);
 
         $response->assertStatus(302);

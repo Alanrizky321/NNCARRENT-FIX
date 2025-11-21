@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Laporan;
 use App\Models\Pesan;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+
 
 
 Artisan::command('inspire', function () {
@@ -45,4 +47,8 @@ Schedule::call(function () {
             ]);
         }
     }
+})->everyMinute();
+
+Schedule::call(function () {
+    Log::info('✅ Cron job Laravel aktif: ' . now());
 })->everyMinute();
