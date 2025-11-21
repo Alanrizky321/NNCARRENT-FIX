@@ -121,7 +121,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'email' => 'required|email|unique:pelanggan,email',
-            'no_hp' => 'required|string|max:13',
+            'no_hp' => 'required|string|max:13|min:11',
             'password' => 'required|min:6|confirmed',
         ]);
 
