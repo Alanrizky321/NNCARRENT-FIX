@@ -39,16 +39,6 @@ class mobilTest extends TestCase
         $this->kategori = Kategori::create([
             'Nama_Kategori' => 'SUV'
         ]);
-        $this->mobil = Mobil::create([
-            'Merek' => 'Daihatsu',
-            'Model' => 'Alya',
-            'Tahun' => 2004,
-            'Harga_Sewa' => 300000,
-            'Kategori_ID' => $this->kategori->id,
-            'ID_Admin' => $this->admin->ID_Admin,
-            'Jumlah_Kursi' => 4,
-            'Jenis_Transmisi' => 'manual',
-        ]);
 
         $this->token = 'testingtoken1234';
     }
@@ -69,8 +59,8 @@ class mobilTest extends TestCase
             'ID_Admin' => $this->admin->ID_Admin,
             'Jumlah_Kursi' => 4,
             'Jenis_Transmisi' => 'manual',
-            'tanggal_selesai' => '2025-12-07',
             'foto' => $file,
+            'Status_Ketersediaan' => 1,
         ]);
 
         $response->assertStatus(302);
@@ -95,10 +85,11 @@ class mobilTest extends TestCase
             'Jumlah_Kursi' => 7,
             'Jenis_Transmisi' => 'manual',
             'foto' => $file,
+            'Status_Ketersediaan' => 1,
         ]);
 
         $response->assertStatus(302);
-        $response->assertRedirect(route('mobil.create'));
+        $response->assertRedirect(route('daftarmobiladmin'));
     }
      /** @test */
     public function merekOverCharacter()
@@ -120,6 +111,7 @@ Donec iaculis commodo justo sit amet iaculis. Vestibulum condimentum vehicula en
             'Jumlah_Kursi' => 7,
             'Jenis_Transmisi' => 'manual',
             'foto' => $file,
+            'Status_Ketersediaan' => 1,
         ]);
 
         $response->assertStatus(302);
@@ -144,6 +136,7 @@ Donec iaculis commodo justo sit amet iaculis. Vestibulum condimentum vehicula en
             'Jumlah_Kursi' => 7,
             'Jenis_Transmisi' => 'manual',
             'foto' => $file,
+            'Status_Ketersediaan' => 1,
         ]);
 
         $response->assertStatus(302);
@@ -168,6 +161,7 @@ Donec iaculis commodo justo sit amet iaculis. Vestibulum condimentum vehicula en
             'Jumlah_Kursi' => 7,
             'Jenis_Transmisi' => 'manual',
             'foto' => $file,
+            'Status_Ketersediaan' => 1,
         ]);
 
         $response->assertStatus(302);
@@ -192,6 +186,7 @@ Donec iaculis commodo justo sit amet iaculis. Vestibulum condimentum vehicula en
             'Jumlah_Kursi' => 7,
             'Jenis_Transmisi' => 'manual',
             'foto' => $file,
+            'Status_Ketersediaan' => 1,
         ]);
 
         $response->assertStatus(302);
@@ -218,6 +213,7 @@ Donec iaculis commodo justo sit amet iaculis. Vestibulum condimentum vehicula en
             'Jumlah_Kursi' => 7,
             'Jenis_Transmisi' => 'manual',
             'foto' => $file,
+            'Status_Ketersediaan' => 1,
         ]);
 
         $response->assertStatus(302);
@@ -242,6 +238,7 @@ Donec iaculis commodo justo sit amet iaculis. Vestibulum condimentum vehicula en
             'Jumlah_Kursi' => 7,
             'Jenis_Transmisi' => 'manual',
             'foto' => $file,
+            'Status_Ketersediaan' => 1,
         ]);
 
         $response->assertStatus(302);
@@ -266,10 +263,234 @@ Donec iaculis commodo justo sit amet iaculis. Vestibulum condimentum vehicula en
             'Jumlah_Kursi' => 7,
             'Jenis_Transmisi' => 'manual',
             'foto' => $file,
+            'Status_Ketersediaan' => 1,
         ]);
 
         $response->assertStatus(302);
         $response->assertRedirect(route('mobil.create'));
         $response->assertSessionHasErrors(['Harga_Sewa']);
+    }
+     /** @test */
+    public function validDataEntryHargaSewa()
+    {
+        $this->actingAs($this->admin, 'admin');
+        Storage::fake('public');
+        $file = UploadedFile::fake()->create('mobil.jpg', 100);
+        $response = $this->from(route('mobil.create'))->withSession(['_token' => $this->token])
+        ->post(route('mobil.store'), [
+            '_token' => $this->token,
+            'Merek' => 'Toyota',
+            'Model' => 'Avanza',
+            'Tahun' => 2025,
+            'Harga_Sewa' => 300000,
+            'Kategori_ID' => $this->kategori->id,
+            'ID_Admin' => $this->admin->ID_Admin,
+            'Jumlah_Kursi' => 7,
+            'Jenis_Transmisi' => 'manual',
+            'foto' => $file,
+            'Status_Ketersediaan' => 1,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('daftarmobiladmin'));
+        $this->assertDatabaseHas('mobil', ['Harga_Sewa' => 300000]);
+    }
+     /** @test */
+    public function validDataFile()
+    {
+        $this->actingAs($this->admin, 'admin');
+        Storage::fake('public');
+        $file = UploadedFile::fake()->create('mobil.png', 1000);
+        $response = $this->from(route('mobil.create'))->withSession(['_token' => $this->token])
+        ->post(route('mobil.store'), [
+            '_token' => $this->token,
+            'Merek' => 'Toyota',
+            'Model' => 'Avanza',
+            'Tahun' => 2025,
+            'Harga_Sewa' => 300000,
+            'Kategori_ID' => $this->kategori->id,
+            'ID_Admin' => $this->admin->ID_Admin,
+            'Jumlah_Kursi' => 7,
+            'Jenis_Transmisi' => 'manual',
+            'foto' => $file,
+            'Status_Ketersediaan' => 1,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('daftarmobiladmin'));
+    }
+     /** @test */
+    public function invalidDataFile()
+    {
+        $this->actingAs($this->admin, 'admin');
+        Storage::fake('public');
+        $file = UploadedFile::fake()->create('mobil.txt', 1000);
+        $response = $this->from(route('mobil.create'))->withSession(['_token' => $this->token])
+        ->post(route('mobil.store'), [
+            '_token' => $this->token,
+            'Merek' => 'Toyota',
+            'Model' => 'Avanza',
+            'Tahun' => 2025,
+            'Harga_Sewa' => 300000,
+            'Kategori_ID' => $this->kategori->id,
+            'ID_Admin' => $this->admin->ID_Admin,
+            'Jumlah_Kursi' => 7,
+            'Jenis_Transmisi' => 'manual',
+            'foto' => $file,
+            'Status_Ketersediaan' => 1,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('mobil.create'));
+        $response->assertSessionHasErrors(['foto']);
+    }
+     /** @test */
+    public function under5MbFile()
+    {
+        $this->actingAs($this->admin, 'admin');
+        Storage::fake('public');
+        $file = UploadedFile::fake()->create('mobil.png', 3000);
+        $response = $this->from(route('mobil.create'))->withSession(['_token' => $this->token])
+        ->post(route('mobil.store'), [
+            '_token' => $this->token,
+            'Merek' => 'Toyota',
+            'Model' => 'Avanza',
+            'Tahun' => 2025,
+            'Harga_Sewa' => 300000,
+            'Kategori_ID' => $this->kategori->id,
+            'ID_Admin' => $this->admin->ID_Admin,
+            'Jumlah_Kursi' => 7,
+            'Jenis_Transmisi' => 'manual',
+            'foto' => $file,
+            'Status_Ketersediaan' => 1,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('daftarmobiladmin'));
+    }
+    /** @test */
+    public function over5MbFile()
+    {
+        $this->actingAs($this->admin, 'admin');
+        Storage::fake('public');
+        $file = UploadedFile::fake()->create('mobil.png', 6000);
+        $response = $this->from(route('mobil.create'))->withSession(['_token' => $this->token])
+        ->post(route('mobil.store'), [
+            '_token' => $this->token,
+            'Merek' => 'Toyota',
+            'Model' => 'Avanza',
+            'Tahun' => 2025,
+            'Harga_Sewa' => 300000,
+            'Kategori_ID' => $this->kategori->id,
+            'ID_Admin' => $this->admin->ID_Admin,
+            'Jumlah_Kursi' => 7,
+            'Jenis_Transmisi' => 'manual',
+            'foto' => $file,
+            'Status_Ketersediaan' => 1,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('mobil.create'));
+        $response->assertSessionHasErrors(['foto']);
+    }
+    /** @test */
+    public function emptyKategori()
+    {
+        $this->actingAs($this->admin, 'admin');
+        Storage::fake('public');
+        $file = UploadedFile::fake()->create('mobil.png', 6000);
+        $response = $this->from(route('mobil.create'))->withSession(['_token' => $this->token])
+        ->post(route('mobil.store'), [
+            '_token' => $this->token,
+            'Merek' => 'Toyota',
+            'Model' => 'Avanza',
+            'Tahun' => 2025,
+            'Harga_Sewa' => 300000,
+            'Kategori_ID' => null,
+            'ID_Admin' => $this->admin->ID_Admin,
+            'Jumlah_Kursi' => 7,
+            'Jenis_Transmisi' => 'manual',
+            'foto' => $file,
+            'Status_Ketersediaan' => 1,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('mobil.create'));
+        $response->assertSessionHasErrors(['Kategori_ID']);
+    }
+    /** @test */
+    public function validDataEntryKategori()
+    {
+        $this->actingAs($this->admin, 'admin');
+        Storage::fake('public');
+        $file = UploadedFile::fake()->create('mobil.png', 1000);
+        $response = $this->from(route('mobil.create'))->withSession(['_token' => $this->token])
+        ->post(route('mobil.store'), [
+            '_token' => $this->token,
+            'Merek' => 'Toyota',
+            'Model' => 'Avanza',
+            'Tahun' => 2025,
+            'Harga_Sewa' => 300000,
+            'Kategori_ID' => $this->kategori->id,
+            'ID_Admin' => $this->admin->ID_Admin,
+            'Jumlah_Kursi' => 7,
+            'Jenis_Transmisi' => 'manual',
+            'foto' => $file,
+            'Status_Ketersediaan' => 1,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('daftarmobiladmin'));
+    }
+    /** @test */
+    public function adminNonNumeric()
+    {
+        $this->withoutExceptionHandling();
+        $this->actingAs($this->admin, 'admin');
+        Storage::fake('public');
+        $file = UploadedFile::fake()->create('mobil.png', 1000);
+        $response = $this->from(route('mobil.create'))->withSession(['_token' => $this->token])
+        ->post(route('mobil.store'), [
+            '_token' => $this->token,
+            'Merek' => 'Toyota',
+            'Model' => 'Avanza',
+            'Tahun' => 2025,
+            'Harga_Sewa' => 300000,
+            'Kategori_ID' => $this->kategori->id,
+            'ID_Admin' => 'satu',
+            'Jumlah_Kursi' => 7,
+            'Jenis_Transmisi' => 'manual',
+            'foto' => $file,
+            'Status_Ketersediaan' => 1,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('daftar.create'));
+        $response->assertSessionHasErrors(['ID_Admin']);
+    }
+    /** @test */
+    public function adminValidDataNumeric()
+    {
+        $this->withoutExceptionHandling();
+        $this->actingAs($this->admin, 'admin');
+        Storage::fake('public');
+        $file = UploadedFile::fake()->create('mobil.png', 1000);
+        $response = $this->from(route('mobil.create'))->withSession(['_token' => $this->token])
+        ->post(route('mobil.store'), [
+            '_token' => $this->token,
+            'Merek' => 'Toyota',
+            'Model' => 'Avanza',
+            'Tahun' => 2025,
+            'Harga_Sewa' => 300000,
+            'Kategori_ID' => $this->kategori->id,
+            'ID_Admin' => $this->admin->ID_Admin,
+            'Jumlah_Kursi' => 7,
+            'Jenis_Transmisi' => 'manual',
+            'foto' => $file,
+            'Status_Ketersediaan' => 1,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('daftarmobiladmin'));
     }
 }
