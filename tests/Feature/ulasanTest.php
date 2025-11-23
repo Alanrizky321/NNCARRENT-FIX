@@ -16,6 +16,7 @@ class RatingUlasanTest extends TestCase
     use RefreshDatabase;
 
     protected $user;
+    protected $admin;
     protected $mobil;
     protected $kategori;
     protected $pesananSelesai;
@@ -75,7 +76,7 @@ class RatingUlasanTest extends TestCase
         $response = $this->get(route('ulasan')); // ← ganti jika route beda
         $response->assertStatus(302)->assertRedirect(route('login')); // atau ke route lain yg kamu pakai
     }
-    
+
      /** @test */
     public function user_belum_pernah_pesan_tidak_bisa_mengisi_ulasan()
     {
@@ -93,8 +94,8 @@ class RatingUlasanTest extends TestCase
 
         $response->assertStatus(302)
                  ->assertRedirect(route('ulasan'));
-                
-                 
+
+
     }
 
 
@@ -174,10 +175,10 @@ class RatingUlasanTest extends TestCase
                  ]);
     }
 
-  
+
    /** @test */
 public function user_bisa_kirim_rating_dengan_input_valid()
-{          
+{
     $this->withoutExceptionHandling();
     $this->actingAs($this->user, 'pelanggan');
 
@@ -215,7 +216,7 @@ public function ulasan_wajib_diisi()
 
     $response->assertStatus(302)
              ->assertRedirect(route('ulasan'));
-             
+
 }
 
 /** @test */

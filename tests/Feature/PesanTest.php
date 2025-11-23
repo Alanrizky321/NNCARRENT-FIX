@@ -161,8 +161,9 @@ class PesanTest extends TestCase
 
         $response->assertStatus(302);
         $response->assertRedirect(route('booking.create', $this->mobil->ID_Mobil));
-        $response->assertSessionHasErrors(['phone_number']); 
+        $response->assertSessionHasErrors(['phone_number']);
     }
+     /** @test */
     public function validEmailFormat()
     {
         $this->actingAs($this->user, 'pelanggan');
@@ -189,5 +190,169 @@ class PesanTest extends TestCase
         $response->assertStatus(302);
         $this->assertDatabaseHas('pesans', ['email' => 'oktahyt@gmail.com']);
     }
+     /** @test */
+    public function invalidEmailFormat()
+    {
+        $this->actingAs($this->user, 'pelanggan');
+        Storage::fake('public');
+        $filektp = UploadedFile::fake()->create('path_ktp_dummy.jpg', 100);
+        $filesim = UploadedFile::fake()->create('path_sim_dummy.jpg', 100);
+        $filetransfer = UploadedFile::fake()->create('path_bukti_pembayaran_dummy.jpg', 100);
+        $response = $this->from(route('booking.create', $this->mobil->ID_Mobil))->withSession(['_token' => $this->token])
+        ->post(route('booking.store', $this->mobil->ID_Mobil), [
+            '_token' => $this->token,
+            'mobil_id' => $this->mobil->ID_Mobil,
+            'customer_name' => 'Okta Hidayat',
+            'phone_number' => '089510694911',
+            'email' => 'oktahydayatgmail.com',
+            'rental_date' => '2025-12-05',
+            'return_date' => '2025-12-10',
+            'ktp_photo' => $filektp,
+            'sim_photo' => $filesim,
+            'bukti_pembayaran' => $filetransfer,
+            'pickup_method' => 'ambil-garasi',
+            'total_bayar' => 1500000,
+        ]);
 
+        $response->assertStatus(302);
+        $response->assertRedirect(route('booking.create', $this->mobil->ID_Mobil));
+        $response->assertSessionHasErrors(['email']);
+    }
+     /** @test */
+    public function invalidDateBookingInput()
+    {
+        $this->actingAs($this->user, 'pelanggan');
+        Storage::fake('public');
+        $filektp = UploadedFile::fake()->create('path_ktp_dummy.jpg', 100);
+        $filesim = UploadedFile::fake()->create('path_sim_dummy.jpg', 100);
+        $filetransfer = UploadedFile::fake()->create('path_bukti_pembayaran_dummy.jpg', 100);
+        $response = $this->from(route('booking.create', $this->mobil->ID_Mobil))->withSession(['_token' => $this->token])
+        ->post(route('booking.store', $this->mobil->ID_Mobil), [
+            '_token' => $this->token,
+            'mobil_id' => $this->mobil->ID_Mobil,
+            'customer_name' => 'Okta Hidayat',
+            'phone_number' => '089510694911',
+            'email' => 'oktahydayat@gmail.com',
+            'rental_date' => '2025-12-31',
+            'return_date' => '2025-12-30',
+            'ktp_photo' => $filektp,
+            'sim_photo' => $filesim,
+            'bukti_pembayaran' => $filetransfer,
+            'pickup_method' => 'ambil-garasi',
+            'total_bayar' => 1500000,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('booking.create', $this->mobil->ID_Mobil));
+        $response->assertSessionHasErrors(['return_date']);
+    }
+     /** @test */
+    public function validInputFile()
+    {
+        $this->actingAs($this->user, 'pelanggan');
+        Storage::fake('public');
+        $filektp = UploadedFile::fake()->create('path_ktp_dummy.jpg', 100);
+        $filesim = UploadedFile::fake()->create('path_sim_dummy.jpg', 100);
+        $filetransfer = UploadedFile::fake()->create('path_bukti_pembayaran_dummy.jpg', 100);
+        $response = $this->from(route('booking.create', $this->mobil->ID_Mobil))->withSession(['_token' => $this->token])
+        ->post(route('booking.store', $this->mobil->ID_Mobil), [
+            '_token' => $this->token,
+            'mobil_id' => $this->mobil->ID_Mobil,
+            'customer_name' => 'Okta Hidayat',
+            'phone_number' => '089510694911',
+            'email' => 'oktahydayat@gmail.com',
+            'rental_date' => '2025-12-21',
+            'return_date' => '2025-12-25',
+            'ktp_photo' => $filektp,
+            'sim_photo' => $filesim,
+            'bukti_pembayaran' => $filetransfer,
+            'pickup_method' => 'ambil-garasi',
+            'total_bayar' => 1500000,
+        ]);
+
+        $response->assertStatus(302);
+        $this->assertDatabaseHas('pesans', ['ktp_photo_path' => 'ktp_photos/' . $filektp->hashName(),]);
+    }
+     /** @test */
+    public function invalidInputFile()
+    {
+        $this->actingAs($this->user, 'pelanggan');
+        Storage::fake('public');
+        $filektp = UploadedFile::fake()->create('path_ktp_dummy.pdf', 100);
+        $filesim = UploadedFile::fake()->create('path_sim_dummy.pdf', 100);
+        $filetransfer = UploadedFile::fake()->create('path_bukti_pembayaran_dummy.pdf', 100);
+        $response = $this->from(route('booking.create', $this->mobil->ID_Mobil))->withSession(['_token' => $this->token])
+        ->post(route('booking.store', $this->mobil->ID_Mobil), [
+            '_token' => $this->token,
+            'mobil_id' => $this->mobil->ID_Mobil,
+            'customer_name' => 'Okta Hidayat',
+            'phone_number' => '089510694911',
+            'email' => 'oktahydayat@gmail.com',
+            'rental_date' => '2025-12-21',
+            'return_date' => '2025-12-25',
+            'ktp_photo' => $filektp,
+            'sim_photo' => $filesim,
+            'bukti_pembayaran' => $filetransfer,
+            'pickup_method' => 'ambil-garasi',
+            'total_bayar' => 1500000,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('booking.create', $this->mobil->ID_Mobil));
+        $response->assertSessionHasErrors(['ktp_photo']);
+    }
+     /** @test */
+    public function validDataInputForm()
+    {
+        $this->actingAs($this->user, 'pelanggan');
+        Storage::fake('public');
+        $filektp = UploadedFile::fake()->create('path_ktp_dummy.jpg', 100);
+        $filesim = UploadedFile::fake()->create('path_sim_dummy.jpg', 100);
+        $filetransfer = UploadedFile::fake()->create('path_bukti_pembayaran_dummy.jpg', 100);
+        $response = $this->from(route('booking.create', $this->mobil->ID_Mobil))->withSession(['_token' => $this->token])
+        ->post(route('booking.store', $this->mobil->ID_Mobil), [
+            '_token' => $this->token,
+            'mobil_id' => $this->mobil->ID_Mobil,
+            'customer_name' => 'Okta Hidayat',
+            'phone_number' => '089510694911',
+            'email' => 'oktahidayat12@gmail.com',
+            'rental_date' => '2025-12-05',
+            'return_date' => '2025-12-10',
+            'ktp_photo' => $filektp,
+            'sim_photo' => $filesim,
+            'bukti_pembayaran' => $filetransfer,
+            'pickup_method' => 'ambil-garasi',
+            'total_bayar' => 1500000,
+        ]);
+
+        $response->assertStatus(302);
+        $this->assertDatabaseHas('pesans', ['nama_pelanggan' => 'Okta Hidayat']);
+    }
+     /** @test */
+    public function onlyNameAndEmail()
+    {
+        $this->actingAs($this->user, 'pelanggan');
+        Storage::fake('public');
+        $filektp = UploadedFile::fake()->create('path_ktp_dummy.jpg', 100);
+        $filesim = UploadedFile::fake()->create('path_sim_dummy.jpg', 100);
+        $filetransfer = UploadedFile::fake()->create('path_bukti_pembayaran_dummy.jpg', 100);
+        $response = $this->from(route('booking.create', $this->mobil->ID_Mobil))->withSession(['_token' => $this->token])
+        ->post(route('booking.store', $this->mobil->ID_Mobil), [
+            '_token' => $this->token,
+            'mobil_id' => $this->mobil->ID_Mobil,
+            'customer_name' => 'Okta Hidayat',
+            'phone_number' => '',
+            'email' => 'oktahidayat12@gmail.com',
+            'rental_date' => '',
+            'return_date' => '',
+            'ktp_photo' => null,
+            'sim_photo' => null,
+            'bukti_pembayaran' => null,
+            'pickup_method' => '',
+            'total_bayar' => null,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('booking.create', $this->mobil->ID_Mobil));
+    }
 }
