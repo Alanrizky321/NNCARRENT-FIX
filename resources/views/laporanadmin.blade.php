@@ -77,7 +77,7 @@
     </header>
 
     <!-- Filter and New Report -->
-    
+
 
     <!-- Reports Table -->
     <section class="overflow-x-auto rounded-lg bg-white border border-gray-200 max-w-7xl">
@@ -120,7 +120,31 @@
   </table>
 </section>
     <!-- Pagination -->
-    <nav
+    <nav class="flex justify-center items-center space-x-2 mt-6 select-none text-sm text-gray-700">
+    {{-- Tombol Previous --}}
+    @if ($laporans->onFirstPage())
+        <span class="border border-gray-300 rounded px-3 py-1 text-gray-400">&lt;</span>
+    @else
+        <a href="{{ $laporans->previousPageUrl() }}" class="border border-gray-300 rounded px-3 py-1 hover:bg-gray-100 transition-colors">&lt;</a>
+    @endif
+
+    {{-- Number Pages --}}
+    @for ($i = 1; $i <= $laporans->lastPage(); $i++)
+        @if ($i == $laporans->currentPage())
+            <span class="bg-blue-600 text-white rounded px-3 py-1 font-semibold italic">{{ $i }}</span>
+        @else
+            <a href="{{ $laporans->url($i) }}" class="border border-gray-300 rounded px-3 py-1 hover:bg-gray-100 transition-colors">{{ $i }}</a>
+        @endif
+    @endfor
+
+    {{-- Tombol Next --}}
+    @if ($laporans->hasMorePages())
+        <a href="{{ $laporans->nextPageUrl() }}" class="border border-gray-300 rounded px-3 py-1 hover:bg-gray-100 transition-colors">&gt;</a>
+    @else
+        <span class="border border-gray-300 rounded px-3 py-1 text-gray-400">&gt;</span>
+    @endif
+</nav>
+    {{-- <nav
       class="flex justify-center items-center space-x-2 mt-6 select-none text-sm text-gray-700"
       aria-label="Pagination"
     >
@@ -157,9 +181,9 @@
       >
         &gt;
       </button>
-    </nav>
+    </nav> --}}
 
-   
+
   </main>
 </body>
 </html>
