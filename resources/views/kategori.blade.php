@@ -76,7 +76,7 @@
 
 @foreach ($mobils as $mobil)
 <article class="flex space-x-6 bg-white p-6 rounded-md shadow-md border border-transparent hover:border-gray-200">
-<img src="{{ asset($mobil->Foto) }}"alt="{{ $mobil->Merek }}" class="w-[180px] h-[80px] object-contain flex-shrink-0">
+<img src="{{ asset('storage/' . $mobil->Foto) }}"alt="{{ $mobil->Merek }}" class="w-[180px] h-[80px] object-contain flex-shrink-0">
     <div class="flex flex-col justify-between text-xs sm:text-sm">
         <div>
             <h3 class="font-bold text-gray-900 text-sm sm:text-base">{{ $mobil->Merek }} <span class="font-extrabold">{{ $mobil->Model }}</span><span class="text-gray-500 font-normal">({{ $mobil->Tahun }})</span></h3>

@@ -14,7 +14,7 @@ class MobilController extends Controller
         $mobils = Mobil::withTrashed()->get();
         return view('daftarmobiladmin', compact('mobils'));
     }
-    
+
 
     public function create()
     {
@@ -39,10 +39,8 @@ class MobilController extends Controller
         $data = $request->all();
 
     if ($request->hasFile('Foto')) {
-    $file = $request->file('Foto');
-    $filename = time().'_'.$file->getClientOriginalName();
-    $path = $file->storeAs('public/mobil', $filename);
-    $data['Foto'] = 'storage/mobil/'.$filename; // simpan path ke DB
+    $path = $request->file('Foto')->store('mobil', 'public');
+    $data['Foto'] = $path;
 }
     Mobil::create($data);
 
@@ -63,11 +61,11 @@ class MobilController extends Controller
         $kategoriList = Kategori::all();
         return view('mobil.edit', compact('mobil', 'kategoriList'));
     }
-    
+
     public function update(Request $request, $id)
     {
         $mobil = Mobil::findOrFail($id);
-        
+
         $request->validate([
             'Merek' => 'required|string|max:255',
             'Model' => 'required|string|max:255',
@@ -79,36 +77,36 @@ class MobilController extends Controller
             'Jumlah_Kursi' => 'required|integer',
             'Jenis_Transmisi' => 'required|string|in:manual,automatic',
         ]);
-    
+
         $data = $request->all();
-    
+
         if ($request->hasFile('Foto')) {
             // Hapus file lama jika ada
             if ($mobil->Foto && file_exists($mobil->Foto)) {
                 unlink($mobil->Foto);
             }
-            
+
             $file = $request->file('Foto');
             $filename = time().'_'.$file->getClientOriginalName();
             $path = 'public-storage/mobil';
             $file->move($path, $filename);
             $data['Foto'] = $path.'/'.$filename;
         }
-    
+
         $mobil->update($data);
-    
+
         return redirect()->route('daftarmobiladmin')->with('success', 'Data mobil berhasil diupdate.');
-    
+
     }
 
     public function destroy($id)
     {
         $mobil = Mobil::findOrFail($id);
         $mobil->delete();
-    
+
         return redirect()->route('daftarmobiladmin')->with('success', 'Data mobil berhasil dihapus!');
     }
-    
+
     public function restore($id)
     {
         $mobil = Mobil::withTrashed()->findOrFail($id);

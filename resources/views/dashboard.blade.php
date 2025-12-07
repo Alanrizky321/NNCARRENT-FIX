@@ -140,7 +140,7 @@
         <article class="min-w-[300px] snap-center flex-shrink-0 group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
           <!-- Car Image -->
           <div class="bg-gray-50 p-4 h-40 flex items-center justify-center overflow-hidden">
-            <img src="{{ asset($mobil->Foto) }}"
+            <img src="{{ asset('storage/' . $mobil->Foto) }}"
               alt="{{ $mobil->Merek }} {{ $mobil->Model }}"
               class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" />
           </div>
